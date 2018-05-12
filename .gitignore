@@ -1,0 +1,26 @@
+
+# Ignore everything
+*
+**
+
+# Except python files,
+!**/*.py
+
+# Javascript files,
+!**/*.js
+
+# and config files
+!.gitignore
+
+!.travis.yml
+
+!makefile
+
+!README.md
+
+# dependency files
+!requirements.txt
+!package.json
+
+
+
