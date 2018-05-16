@@ -2,7 +2,6 @@
 
 let chai = require('chai');
 let chai_http = require('chai-http');
-let portfinder = require('portfinder');
 let request = require('request');
 let server = require('../app');
 
@@ -23,7 +22,6 @@ describe('User Authentication', function() {
             password: "aVerySecurePassword",
         };
         beforeEach("Instantiate server", async () => {
-            process.env.PORT = await portfinder.getPortPromise({port: 10002});
             server = require('../app').server;
         });
         afterEach("Close server", async () => {
