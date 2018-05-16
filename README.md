@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/samgomena/share_resources.svg?branch=develop)](https://travis-ci.org/samgomena/share_resources)
+[![Build Status](https://travis-ci.org/shared-systems/api.svg?branch=master)](https://travis-ci.org/shared-systems/api)
 
 #### Synopsis
 **Share Resources** is an open source platform designed to allow 
