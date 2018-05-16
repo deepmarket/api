@@ -2,42 +2,81 @@
 
 let chai = require('chai');
 let chai_http = require('chai-http');
+let portfinder = require('portfinder');
 let request = require('request');
 let server = require('../app');
 
 let should = chai.should();
 let expect = chai.expect;
 
-const baseUrl = 'http://localhost:3000/api/v1';
-// var should = require("should");
+const baseUrl = "http://localhost:3000/api/v1";
 
 chai.use(chai_http);
 
-describe('User Authentication', () => {
-    describe('Create account', () => {
-        let server;
-        beforeEach("Instantiate server", function() {
-            server = require('../app')();
+describe('User Authentication', function() {
+    describe('Manage account', function() {
+        var server;
+        const customer_payload  = {
+            firstname: "Bertha",
+            lastname: "deblues",
+            emailid: "bertha.deblues@jazzy.com",
+            password: "aVerySecurePassword",
+        };
+        beforeEach("Instantiate server", async () => {
+            process.env.PORT = await portfinder.getPortPromise({port: 10002});
+            server = require('../app').server;
         });
-        afterEach("Close server", function(done) {
-            console.log("Closing server");
-            server.close(done);
+        afterEach("Close server", async () => {
+            require('../app').stop();
         });
         it('should add a new user account', function(done) {
-            chai.request(server).post('/api/v1/account').send({
-                "firstname": "Bertha",
-                "lastname": "deblues",
-                "emailid": "bertha.deblues@jazzy.com",
-                "password": "aVerySecurePassword",
-            }).end(function(err, res) {
-                let mongoose = require('mongoose');
+            chai.request(server).post('/api/v1/account')
+                .send(customer_payload)
+                .end(function(err, res) {
                 res.should.have.status(200);
-                expect(res).to.be.json;
                 res.body.should.be.a('object');
-                res.body.should.have.a.property('success');
+                // noinspection BadExpressionStatementJS
+                expect(res).to.be.json;
+
+                ["success", "message", "error"].forEach(val => {
+                    res.body.should.have.a.property(val);
+                });
                 res.body.success.should.be.eql(true);
-                mongoose.
                 done();
+            });
+        });
+
+        it('should get the customers unique `_id` given when provided a unique email address', function(done) {
+            chai.request(server).get(`/api/v1/account/${customer_payload.emailid}`)
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    // noinspection BadExpressionStatementJS
+                    expect(res).to.be.json;
+
+                    ["success", "message", "error"].forEach(val => {
+                        res.body.should.have.a.property(val);
+                    });
+                    res.body.should.have.a.property('CustomerId');
+                    // res.body.error.should.be.null();
+                    res.body.success.should.be.eql(true);
+                    customer_payload.customer_id = res.body.CustomerId;
+                    done();
+                })
+        });
+
+        it('should remove the customer by their unique `_id` attribute', function(done) {
+            chai.request(server).delete(`/api/v1/account/${customer_payload.customer_id}`)
+                .end(function(err, res) {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    // noinspection BadExpressionStatementJS
+                    expect(res).to.be.json;
+                    ["success", "message", "error"].forEach(val => {
+                       res.body.should.have.a.property(val);
+                    });
+
+                    done();
             });
         });
     });

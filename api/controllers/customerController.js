@@ -9,21 +9,27 @@ exports.getidbyemailid = (req, res) => {
     let message;
     let status = 200;
 
-    //search the user by email id and return the object id(customer id).
-    //Customer Id will be used for subsequent requests.
-    customer.findOne({'emailid': req.params.emailId}, (err, user) => {
+    // Find the customer by email id and subsequently select the `_id` property from the record.
+    // customer_id will be used for subsequent requests, so send it back.
+    customer.findOne({'emailid': req.params.emailId}, '_id', (err, customer_id) => {
+        let id = null;
+        let success = false;
         if (err) {
             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
             status = 403;
+        } else if (!customer_id) { // TODO: not sure why err isn't set when customer is not found.
+            status = 401;
+            message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
         } else {
-            message = "Successfully found id.";
+           message = "Successfully found id.";
+           id = customer_id._id;
         }
 
         res.status(status).json({
-            success: !err,
+            success: !!customer_id,  // `!!` is shorthanded boolean conversion -- but ill advised I suppose...
             error: err ? err : null,
             message: message,
-            "CustomerId": user._id,
+            "CustomerId": id,
         })
     });
 };
@@ -81,7 +87,7 @@ exports.deletecustomerbyid = (req, res) => {
             status = 403;
             message = `Failed to remove user.\nError: ${err.name}.`;
         } else if(!customer) {
-            // TODO: if customer is null this 'fails' silently. As in, it doesn't set err. Perhaps let client know?
+            // TODO: if customer is null this 'fails' silently. As in, it doesn't set err. Let client know?
             status = 401;
             message = `Failed to remove user.\nCould not find customer id.`;
         } else {

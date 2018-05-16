@@ -13,7 +13,7 @@ const customer = require(`${config.ROUTES_PATH}/customer.js`);
 const authenticate = require(`${config.ROUTES_PATH}/authenticate.js`);
 
 const DEBUG = true; // flag for verbose console output
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 let app = express();
 let router = express.Router();
@@ -70,12 +70,16 @@ process.on('SIGINT', () => {
 
 let server = app.listen(PORT, () => {
     if(DEBUG) {
-	    console.log(`Server started on port ${PORT}`);
+        console.log(`app listening on port: ${PORT}.`);
     }
 });
 
-function createServer() {
-    return server;
-}
+let stop = () => {
+    if(DEBUG) {
+        console.log("Closing server.");
+    }
+    server.close();
+};
 
-module.exports = createServer;
+module.exports.server = server;
+module.exports.stop = stop;
