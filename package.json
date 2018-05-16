@@ -23,7 +23,7 @@
     "should": "^13.2.1"
   },
   "scripts": {
-    "test": "mocha --exit"
+    "test": "./node_modules/.bin/mocha --exit"
   },
   "repository": {
     "type": "git",
