@@ -16,33 +16,35 @@ chai.use(chai_http);
 describe('User Authentication', () => {
     describe('Create account', () => {
         let server;
-        beforeEach(() => {
+        beforeEach("Instantiate server", function() {
             server = require('../app')();
         });
-        afterEach((done) => {
+        afterEach("Close server", function(done) {
             console.log("Closing server");
             server.close(done);
         });
-        it('should add a new user account', (done) => {
+        it('should add a new user account', function(done) {
             chai.request(server).post('/api/v1/account').send({
                 "firstname": "Bertha",
                 "lastname": "deblues",
                 "emailid": "bertha.deblues@jazzy.com",
                 "password": "aVerySecurePassword",
-            }).end((err, res) => {
+            }).end(function(err, res) {
+                let mongoose = require('mongoose');
                 res.should.have.status(200);
                 expect(res).to.be.json;
                 res.body.should.be.a('object');
                 res.body.should.have.a.property('success');
                 res.body.success.should.be.eql(true);
+                mongoose.
                 done();
             });
         });
     });
 
-    descibe('Verify safe password storage', () => {
-        
-    })
+    describe('Verify safe password storage', () => {
+        let none = null;
+    });
 });
 
 // describe('authenticate user', () => {

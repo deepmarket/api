@@ -22,6 +22,7 @@ router.post('/', customer_controller.addcustomer);
 router.put('/:id', verifyToken, customer_controller.updateprofilebyid);
 
 /* delete customer  */
-router.delete('/:id', verifyToken, customer_controller.deletecustomerbyid);
+// router.delete('/:id', verifyToken, customer_controller.deletecustomerbyid);
+router.delete('/:id', customer_controller.deletecustomerbyid);
 
 module.exports = router;

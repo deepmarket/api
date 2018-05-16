@@ -15,7 +15,7 @@ If you would like to submit changes, please open a pull request.
 * Nodejs _8.11.1_
 _-- Node Modules --_
 * ExpressJs _4.16.2_ 
-* mongoose _5.0.7_
+* mongoose _5.1.1_
 * jsonwebtoken _8.2.0_
 * bcrypt _2.4.3_
 * body-parser _1.18.2_
@@ -42,23 +42,6 @@ $ npm app.js
 * PyQt _5.10_
 * sip _4.19.7_
 * requests _2.18.4_
-
-##### To install:
-```bash
-# pip installation
-$ pip install -r requirements.txt
-
-# python installation
-$ python -m pip install -r requirements.txt
-```
-**_Note_**: Make sure to use `python 3.6` to install these dependencies.
-
-
-##### To run:
-```bash
-$ python dsktp/initialize.py
-```
-**_Note_**: Make sure to use `python 3.6` to run the application.
 
 #### Team Members:
 * [Susham Yerabolu](mailto:yerabolu@pdx.edu)

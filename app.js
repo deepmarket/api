@@ -13,7 +13,7 @@ const customer = require(`${config.ROUTES_PATH}/customer.js`);
 const authenticate = require(`${config.ROUTES_PATH}/authenticate.js`);
 
 const DEBUG = true; // flag for verbose console output
-const PORT = 3000;
+const PORT = 8000;
 
 let app = express();
 let router = express.Router();
@@ -54,7 +54,7 @@ mongoose.connection.on('disconnected', () => {
 // When the connection is open
 mongoose.connection.on('open', () => {
     if(DEBUG) {
-        console.log('Mongoose default connection is open');
+        console.log(`NOTICE: Using mongoose v${mongoose.version} ODM.`);
     }
 });
 
