@@ -86,12 +86,6 @@ describe('User Authentication', function() {
     });
 });
 
-// describe('authenticate user', () => {
-//     it('should authenticate successfully', (done) => {
-//         chai.request(baseUrl).post()
-//     })
-// })
-
 // TODO
 // describe('/POST Resources', function() {
 //     it('it should add a Resources', function(done) {

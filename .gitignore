@@ -3,7 +3,7 @@
 *
 **
 
-# Except python files,
+# Except python files (just in case),
 !**/*.py
 
 # Javascript files,
@@ -14,12 +14,9 @@
 
 !.travis.yml
 
-!makefile
-
 !README.md
 
 # dependency files
-!requirements.txt
 !package.json
 
 
