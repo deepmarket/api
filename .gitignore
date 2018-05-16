@@ -3,6 +3,9 @@
 *
 **
 
+# These guy's apparently weren't getting the message...
+*.DS_Store
+
 # Except python files (just in case),
 !**/*.py
 
