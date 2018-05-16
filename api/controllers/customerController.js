@@ -76,13 +76,18 @@ exports.deletecustomerbyid = (req, res) => {
     let status = 200;
     let id = req.params.id;
 
-    customer.findOneAndDelete(id, err => {
+    customer.findOneAndDelete({_id: id}, (err, customer) => {
         if(err) {
             status = 403;
             message = `Failed to remove user.\nError: ${err.name}.`;
+        } else if(!customer) {
+            // TODO: if customer is null this 'fails' silently. As in, it doesn't set err. Perhaps let client know?
+            status = 401;
+            message = `Failed to remove user.\nCould not find customer id.`;
         } else {
             message = "Successfully removed user.";
         }
+
         res.status(status).json({
             success: !err,
             error: err ? err : null,
