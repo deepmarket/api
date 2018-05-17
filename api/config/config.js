@@ -10,7 +10,7 @@
 const config = {};
 
 // Config parameters of the database.
-config.API_ENDPOINT_EXTENSION = "api/v1";
+config.API_ENDPOINT_EXTENSION = "/api/v1";
 config.DB_URI = "mongodb://localhost/ShareResources";
 config.DATABASE = "SHARE_RESOURCES";
 config.JWT_KEY = "$h!r#res0urces";  // TODO: propably use env var instead?

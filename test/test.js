@@ -17,7 +17,7 @@ describe('Customer Authentication', function() {
         password: "aVerySecurePassword",
     };
 
-    let server;
+    var server;
     beforeEach("Instantiate server", async () => {
         server = require('../app').server;
     });
@@ -179,22 +179,22 @@ describe("config", function() {
         it("should have an api endpoint extension", function(done) {
             let endpoint = config.API_ENDPOINT_EXTENSION;
             expect(endpoint).to.be.a("string");
-            expect(endpoint, "api/v1").to.equal("api/v1");
+            expect(endpoint, "/api/v1").to.equal("/api/v1");
             done();
         });
 
         it("should have a database connection uri", function(done) {
             let db_uri = config.DB_URI;
             expect(db_uri).to.be.a("string");
-            expect(db_uri.split('/')).to.have.lengthOf(3);
-            expect(db_uri.split('/')[2], "ShareResources").to.equal('ShareResources');
+            expect(db_uri.split('/')).to.have.lengthOf(4);
+            expect(db_uri.split('/')[3], "ShareResources").to.equal('ShareResources');
             done();
         });
 
         it("should maintain number for the number of salt rounds for bcrypt", function(done) {
             let salts = config.SALT_ROUNDS;
             expect(salts).to.be.a('number');
-            expect(salts).to.be.greaterThanOrEqual(10);
+            expect(salts).to.be.above(9);
             done();
         });
     });
