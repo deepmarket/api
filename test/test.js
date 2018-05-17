@@ -2,34 +2,34 @@
 
 let chai = require('chai');
 let chai_http = require('chai-http');
-let request = require('request');
-let server = require('../app');
+// let request = require('request');
 
 let should = chai.should();
 let expect = chai.expect;
 
-const baseUrl = "http://localhost:3000/api/v1";
-
 chai.use(chai_http);
 
-describe('User Authentication', function() {
-    describe('Manage account', function() {
-        var server;
-        const customer_payload  = {
-            firstname: "Bertha",
-            lastname: "deblues",
-            emailid: "bertha.deblues@jazzy.com",
-            password: "aVerySecurePassword",
-        };
-        beforeEach("Instantiate server", async () => {
-            server = require('../app').server;
-        });
-        afterEach("Close server", async () => {
-            require('../app').stop();
-        });
+describe('Customer Authentication', function() {
+    const CUSTOMER_PAYLOAD  = {
+        firstname: "Bertha",
+        lastname: "deblues",
+        emailid: "bertha.deblues@jazzy.com",
+        password: "aVerySecurePassword",
+    };
+
+    let server;
+    beforeEach("Instantiate server", async () => {
+        server = require('../app').server;
+    });
+
+    afterEach("Close server", async () => {
+        require('../app').stop();
+    });
+
+    describe('Proper Account Management', function(done) {
         it('should add a new user account', function(done) {
             chai.request(server).post('/api/v1/account')
-                .send(customer_payload)
+                .send(CUSTOMER_PAYLOAD)
                 .end(function(err, res) {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -40,12 +40,13 @@ describe('User Authentication', function() {
                     res.body.should.have.a.property(val);
                 });
                 res.body.success.should.be.eql(true);
+                // expect(res.body.error).to.be.null();
                 done();
             });
         });
 
         it('should get the customers unique `_id` given when provided a unique email address', function(done) {
-            chai.request(server).get(`/api/v1/account/${customer_payload.emailid}`)
+            chai.request(server).get(`/api/v1/account/${CUSTOMER_PAYLOAD.emailid}`)
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
@@ -56,31 +57,119 @@ describe('User Authentication', function() {
                         res.body.should.have.a.property(val);
                     });
                     res.body.should.have.a.property('CustomerId');
-                    // res.body.error.should.be.null();
+                    // expect(res.body.error).to.be.null();
                     res.body.success.should.be.eql(true);
-                    customer_payload.customer_id = res.body.CustomerId;
+                    CUSTOMER_PAYLOAD.customer_id = res.body.CustomerId;
                     done();
                 })
         });
 
         it('should remove the customer by their unique `_id` attribute', function(done) {
-            chai.request(server).delete(`/api/v1/account/${customer_payload.customer_id}`)
+            chai.request(server).delete(`/api/v1/account/${CUSTOMER_PAYLOAD.customer_id}`)
                 .end(function(err, res) {
                     res.should.have.status(200);
                     res.body.should.be.a('object');
                     // noinspection BadExpressionStatementJS
                     expect(res).to.be.json;
+
                     ["success", "message", "error"].forEach(val => {
                        res.body.should.have.a.property(val);
                     });
-
+                    res.body.success.should.be.eql(true);
                     done();
             });
         });
     });
 
-    describe('Verify safe password storage', () => {
-        let none = null;
+    describe('Improper Account Management', function() {
+        //TODO: set this up to use before and after hooks instead of describe scenarios
+        describe('set up db for checking duplicate errors', function() {
+            it('should create a new user account', function (done) {
+                chai.request(server).post('/api/v1/account')
+                    .send(CUSTOMER_PAYLOAD)
+                    .end(function(err, res) {
+                        res.should.have.status(200);
+                        res.body.success.should.be.eql(true);
+                        done();
+                    });
+            });
+            it('should fetch the unique id for the customer', function(done) {
+                chai.request(server).get(`/api/v1/account/${CUSTOMER_PAYLOAD.emailid}`)
+                    .end(function(err, res) {
+                        res.should.have.status(200);
+                        res.body.success.should.be.eql(true);
+                        CUSTOMER_PAYLOAD.customer_id = res.body.CustomerId;
+                        done();
+                    })
+
+            });
+        });
+
+        describe('verify failures', function() {
+            it('should fail to add the same user account', function(done) {
+                chai.request(server).post('/api/v1/account').send(CUSTOMER_PAYLOAD)
+                    .end(function(err, res) {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        // noinspection BadExpressionStatementJS
+                        expect(res).to.be.json;
+
+                        ["success", "message", "error"].forEach(val => {
+                            res.body.should.have.a.property(val);
+                        });
+                        res.body.success.should.be.eql(false);
+                        // expect(res.body.error).to.be.null();
+                        res.body.error.code.should.be.eql(11000);
+                        done();
+                    });
+            });
+
+            it('should not get any customer information when provided a fake email address', function(done) {
+                chai.request(server).get(`/api/v1/account/not@real.com`)
+                    .end(function(err, res) {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        // noinspection BadExpressionStatementJS
+                        expect(res).to.be.json;
+
+                        ["success", "message", "error"].forEach(val => {
+                            res.body.should.have.a.property(val);
+                        });
+                        res.body.should.have.a.property('CustomerId');
+                        console.log(res.body.error);
+                        // expect(res.body.error).to.be.null();
+                        res.body.success.should.be.eql(false);
+                        done();
+                    });
+            });
+
+            it('should remove the customer by their unique `_id` successfully', function(done) {
+                chai.request(server)
+                    .delete(`/api/v1/account/${CUSTOMER_PAYLOAD.customer_id}`)
+                    .end(function(err, res) {
+                        res.should.have.status(200);
+                        res.body.success.should.be.eql(true);
+                        done();
+                    });
+            });
+
+            it('should remove the customer by their unique `_id` unsuccessfully', function(done) {
+                chai.request(server)
+                    .delete(`/api/v1/account/${CUSTOMER_PAYLOAD.customer_id}`)
+                    .end(function(err, res) {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        // noinspection BadExpressionStatementJS
+                        expect(res).to.be.json;
+
+                        ["success", "message", "error"].forEach(val => {
+                            res.body.should.have.a.property(val);
+                        });
+                        res.body.success.should.be.eql(false);
+                        done();
+                    });
+            });
+        });
     });
 });
 

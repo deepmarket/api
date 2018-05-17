@@ -13,12 +13,11 @@ exports.getidbyemailid = (req, res) => {
     // customer_id will be used for subsequent requests, so send it back.
     customer.findOne({'emailid': req.params.emailId}, '_id', (err, customer_id) => {
         let id = null;
-        let success = false;
         if (err) {
             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
-            status = 403;
+            status = 500;
         } else if (!customer_id) { // TODO: not sure why err isn't set when customer is not found.
-            status = 401;
+            status = 400;
             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
         } else {
            message = "Successfully found id.";
@@ -26,7 +25,7 @@ exports.getidbyemailid = (req, res) => {
         }
 
         res.status(status).json({
-            success: !!customer_id,  // `!!` is shorthanded boolean conversion -- but ill advised I suppose...
+            success: !!customer_id,  // `!!` is shorthanded boolean conversion
             error: err ? err : null,
             message: message,
             "CustomerId": id,
@@ -36,7 +35,6 @@ exports.getidbyemailid = (req, res) => {
 
 /* Add a new customer to the collection */
 exports.addcustomer = (req, res) => {
-    // TODO: check whether the token sent is valid or not.
     let user;
     let message = "";
     let status = 200;
@@ -55,10 +53,11 @@ exports.addcustomer = (req, res) => {
             if (err) {
                 if (err.code == 11000) {
                     message = `Failed to create account.\nThe email '${req.body.emailid}' is already in use.`;
+                    status = 400;
                 } else {
                     message = `Failed to create account.\nError: ${err.name}.`;
+                    status = 500;
                 }
-                status = 403;
             } else {
                 message = "Successfully created account.";
             }
@@ -73,7 +72,14 @@ exports.addcustomer = (req, res) => {
 
 /* UPDATE RESOURCE DETAILS */
 exports.updateprofilebyid = (req, res) => {
-    res.send('NOT IMPLEMENTED: "updateprofilebyid"');
+    let status = 501;
+    let message = "NOT IMPLEMENTED";
+
+    res.status(status).json({
+        success: false,
+        error: null,
+        message: message,
+    });
 };
 
 /* DELETE PRODUCT */
@@ -84,18 +90,18 @@ exports.deletecustomerbyid = (req, res) => {
 
     customer.findOneAndDelete({_id: id}, (err, customer) => {
         if(err) {
-            status = 403;
+            status = 500;
             message = `Failed to remove user.\nError: ${err.name}.`;
         } else if(!customer) {
             // TODO: if customer is null this 'fails' silently. As in, it doesn't set err. Let client know?
-            status = 401;
+            status = 400;
             message = `Failed to remove user.\nCould not find customer id.`;
         } else {
             message = "Successfully removed user.";
         }
 
         res.status(status).json({
-            success: !err,
+            success: !!customer,
             error: err ? err : null,
             message: message,
         });
