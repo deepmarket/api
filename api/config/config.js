@@ -10,8 +10,10 @@
 const config = {};
 
 // Config parameters of the database.
-config.MONGO_DB_URI = "mongodburi";
+config.API_ENDPOINT_EXTENSION = "api/v1";
+config.DB_URI = "mongodb://localhost/ShareResources";
 config.DATABASE = "SHARE_RESOURCES";
+config.JWT_KEY = "$h!r#res0urces";  // TODO: propably use env var instead?
 config.SALT_ROUNDS = 10;
 
 // Config for the PATHS. Make sure to check the below paths that are commonly used.
@@ -19,7 +21,6 @@ config.ROUTES_PATH = "./api/routes";
 config.CONTROLLERS_PATH = "../controllers";
 config.MODELS_PATH = "./api/models";
 config.APPLICATION_CONFIG = "./api/config";
-config.JWT_KEY = "$h!r#res0urces";
 config.JOB_SCHEDULED = "Scheduled";
 
 module.exports = config;

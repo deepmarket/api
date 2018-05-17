@@ -22,8 +22,8 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-// All endpoints extend from /api/v1/
-app.use('/api/v1', router);
+// All endpoints should extend from `/api/v1/`
+app.use(config.API_ENDPOINT_EXTENSION, router);
 
 router.use('/authenticate', authenticate);
 router.use('/account', customer);
@@ -31,15 +31,13 @@ router.use('/resources', resources);
 router.use('/jobs', jobs);
 
 mongoose.set('bufferCommands', false);
-
-const dbURI = 'mongodb://localhost/ShareResources';
-
 mongoose.Promise = global.Promise;
 
 // Create the database connection
-mongoose.connect(dbURI).then(() => {
+mongoose.connect(config.DB_URI)
+    .then(() => {
         if(DEBUG) {
-            console.log(`Connection to '${dbURI}' successful.`);
+            console.log(`Connection to '${config.DB_URI}' successful.`);
         }
     }).catch((err) => {
         console.log(`ERROR: ${err}`);
