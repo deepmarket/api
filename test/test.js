@@ -2,11 +2,9 @@
 
 let chai = require('chai');
 let chai_http = require('chai-http');
-// let request = require('request');
-
-let should = chai.should();
 let expect = chai.expect;
 
+chai.should();
 chai.use(chai_http);
 
 describe('Customer Authentication', function() {
@@ -26,7 +24,7 @@ describe('Customer Authentication', function() {
         require('../app').stop();
     });
 
-    describe('Proper Account Management', function(done) {
+    describe('Proper Account Management', function() {
         it('should add a new user account', function(done) {
             chai.request(server).post('/api/v1/account')
                 .send(CUSTOMER_PAYLOAD)
