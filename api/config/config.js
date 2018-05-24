@@ -13,7 +13,7 @@ const config = {};
 config.API_ENDPOINT_EXTENSION = "/api/v1";
 config.DB_URI = "mongodb://localhost/ShareResources";
 config.DATABASE = "SHARE_RESOURCES";
-config.JWT_KEY = "$h!r#res0urces";  // TODO: propably use env var instead?
+config.JWT_KEY = "$h!r#res0urces";  // TODO: probably use env var instead?
 config.SALT_ROUNDS = 10;
 
 // Config for the PATHS. Make sure to check the below paths that are commonly used.

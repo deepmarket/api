@@ -5,6 +5,8 @@ let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
 let customer = require('../models/customer');
 
+// TODO: not sure why we're even doing this as we can just pass around significantly less meaningful and guaranteedly
+// TODO: unique id's created by mongo? Should probably just refactor this whole thing. Grrr.
 exports.getidbyemailid = (req, res) => {
     let message;
     let status = 200;
@@ -48,8 +50,8 @@ exports.addcustomer = (req, res) => {
             status: "Active",
         });
 
-        // TODO: wrap this in a promise and resolve it later yah?
-        user.save(err => {
+        // TODO: really need to fix this callback hell, yah?
+        user.save((err, new_user) => {
             if (err) {
                 if (err.code == 11000) {
                     message = `Failed to create account.\nThe email '${req.body.emailid}' is already in use.`;
@@ -58,14 +60,34 @@ exports.addcustomer = (req, res) => {
                     message = `Failed to create account.\nError: ${err.name}.`;
                     status = 500;
                 }
+                res.status(status).json({
+                    success: !err,
+                    error: err ? err : null,
+                    message: message,
+                    token: null,
+                    // auth: true, // TODO: Not sure about this yet
+                });
             } else {
                 message = "Successfully created account.";
+
+                let jwt_payload = {
+                    email: req.body.emailid,
+                    id: new_user._id,
+                };
+                jwt.sign(jwt_payload, config.JWT_KEY, {expiresIn: '24h'}, (err, token) => {
+                    if (err) {
+                        status = 400;
+                        message = "Failed to create authentication token."
+                    }
+                    res.status(status).json({
+                        success: !err,
+                        error: err ? err : null,
+                        message: message,
+                        token: token,
+                        // auth: true, // TODO: Not sure about this yet
+                    });
+                });
             }
-            res.status(status).json({
-                success: !err,
-                error: err ? err : null,
-                message: message,
-            });
         });
     });
 };
@@ -86,9 +108,8 @@ exports.updateprofilebyid = (req, res) => {
 exports.deletecustomerbyid = (req, res) => {
     let message = "";
     let status = 200;
-    let id = req.params.id;
 
-    customer.findOneAndDelete({_id: id}, (err, customer) => {
+    customer.findOneAndDelete({_id: req.user_id}, (err, customer) => {
         if(err) {
             status = 500;
             message = `Failed to remove user.\nError: ${err.name}.`;

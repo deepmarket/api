@@ -14,15 +14,16 @@ function verifyToken(req, res, next) {
         });
     }
     // TODO: pretty sure this should be JWT_KEY not JWT_TOKEN
-    jwt.verify(token, config.JWT_TOKEN, function(err, decoded) {
+    jwt.verify(token, config.JWT_KEY, (err, decoded) => {
         if(err) {
-            return res.status(403).send({
+            return res.status(400).send({
                 success: false,
                 error: err ? err : null,
                 message: 'Failed to authenticate with provided token.',
             });
         }
-        // If everything good, save to request for use in other routes
+        // If everything is good, save to request for use in other routes
+        req.user_id = decoded.id;
         next();
     });
 }
