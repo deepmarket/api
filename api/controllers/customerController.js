@@ -7,33 +7,33 @@ let customer = require('../models/customer');
 
 // TODO: not sure why we're even doing this as we can just pass around significantly less meaningful and guaranteedly
 // TODO: unique id's created by mongo? Should probably just refactor this whole thing. Grrr.
-exports.getidbyemailid = (req, res) => {
-    let message;
-    let status = 200;
-
-    // Find the customer by email id and subsequently select the `_id` property from the record.
-    // customer_id will be used for subsequent requests, so send it back.
-    customer.findOne({'emailid': req.params.emailId}, '_id', (err, customer_id) => {
-        let id = null;
-        if (err) {
-            message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
-            status = 500;
-        } else if (!customer_id) { // TODO: not sure why err isn't set when customer is not found.
-            status = 400;
-            message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
-        } else {
-           message = "Successfully found id.";
-           id = customer_id._id;
-        }
-
-        res.status(status).json({
-            success: !!customer_id,  // `!!` is shorthanded boolean conversion
-            error: err ? err : null,
-            message: message,
-            "CustomerId": id,
-        })
-    });
-};
+// exports.getidbyemailid = (req, res) => {
+//     let message;
+//     let status = 200;
+//
+//     // Find the customer by email id and subsequently select the `_id` property from the record.
+//     // customer_id will be used for subsequent requests, so send it back.
+//     customer.findOne({'emailid': req.params.emailId}, '_id', (err, customer_id) => {
+//         let id = null;
+//         if (err) {
+//             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
+//             status = 500;
+//         } else if (!customer_id) { // TODO: not sure why err isn't set when customer is not found.
+//             status = 400;
+//             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
+//         } else {
+//            message = "Successfully found id.";
+//            id = customer_id._id;
+//         }
+//
+//         res.status(status).json({
+//             success: !!customer_id,  // `!!` is shorthanded boolean conversion
+//             error: err ? err : null,
+//             message: message,
+//             "CustomerId": id,
+//         })
+//     });
+// };
 
 /* Add a new customer to the collection */
 exports.addcustomer = (req, res) => {

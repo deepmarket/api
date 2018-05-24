@@ -1,7 +1,7 @@
 /*
 
-This file contains the model of the Resources Collection
-Use this model to populate the Resources table
+This file contains the definition of the schema for customers
+as well as the instantiation of the model.
 
 */
 
@@ -21,7 +21,7 @@ let customerSchema = new Schema({
 });
 
 // Create a model to interact with from the schema
-mongoose.model('Customers', customerSchema);
-let customers = mongoose.model('Customers');
+mongoose.model('Customers', customerSchema);  // Register model
+let customers = mongoose.model('Customers');  // instantiate model
 
 module.exports = customers;

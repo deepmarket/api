@@ -11,18 +11,15 @@ let customer_controller = require(`${config.CONTROLLERS_PATH}/customerController
 
 /* GET ALL RESOURCES */
 //router.get('/', customer_controller.getallresources);
+// router.get('/', customer_controller.getidbyemailid);
 
-/* get customer_Id  */
-router.get('/:emailId', customer_controller.getidbyemailid);
-
-/* Create a new customer */
+// Create a new customer
 router.post('/', customer_controller.addcustomer);
 
-/* update customer details */
-router.put('/:id', verifyToken, customer_controller.updateprofilebyid);
+// update customer details
+router.put('/', verifyToken, customer_controller.updateprofilebyid);
 
-/* delete customer  */
-router.delete('/:id', verifyToken, customer_controller.deletecustomerbyid);
-// router.delete('/:id', customer_controller.deletecustomerbyid);
+// delete customer
+router.delete('/', verifyToken, customer_controller.deletecustomerbyid);
 
 module.exports = router;

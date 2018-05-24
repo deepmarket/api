@@ -77,16 +77,6 @@ describe('Customer Authentication', function() {
                         done();
                     });
             });
-            // it('should fetch the unique id for the customer', function(done) {
-            //     chai.request(server).get(`/api/v1/account/${CUSTOMER_PAYLOAD.emailid}`)
-            //         .end(function(err, res) {
-            //             res.should.have.status(200);
-            //             res.body.success.should.be.eql(true);
-            //             CUSTOMER_PAYLOAD.customer_id = res.body.CustomerId;
-            //             done();
-            //         })
-            //
-            // });
         });
 
         describe('verify failures', function() {
@@ -108,25 +98,6 @@ describe('Customer Authentication', function() {
                         done();
                     });
             });
-
-            // it('should not get any customer information when provided a fake email address', function(done) {
-            //     chai.request(server).get(`/api/v1/account/not@real.com`)
-            //         .end(function(err, res) {
-            //             res.should.have.status(400);
-            //             res.body.should.be.a('object');
-            //             // noinspection BadExpressionStatementJS
-            //             expect(res).to.be.json;
-            //
-            //             ["success", "message", "error"].forEach(val => {
-            //                 res.body.should.have.a.property(val);
-            //             });
-            //             res.body.should.have.a.property('CustomerId');
-            //             console.log(res.body.error);
-            //             // expect(res.body.error).to.be.null();
-            //             res.body.success.should.be.eql(false);
-            //             done();
-            //         });
-            // });
 
             it('should remove the customer by their unique `_id` successfully', function(done) {
                 chai.request(server)
