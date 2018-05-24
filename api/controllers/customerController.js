@@ -53,7 +53,7 @@ exports.addcustomer = (req, res) => {
         // TODO: really need to fix this callback hell, yah?
         user.save((err, new_user) => {
             if (err) {
-                if (err.code == 11000) {
+                if (err.code === 11000) {
                     message = `Failed to create account.\nThe email '${req.body.emailid}' is already in use.`;
                     status = 400;
                 } else {

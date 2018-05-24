@@ -13,12 +13,17 @@ const customer = require(`${config.ROUTES_PATH}/customer.js`);
 const authenticate = require(`${config.ROUTES_PATH}/authenticate.js`);
 
 const DEBUG = true; // flag for verbose console output
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.test ? 1234 : process.env.PORT || 8000;
 
 let app = express();
 let router = express.Router();
 
-app.use(morgan('dev'));
+let log_level = "regular";
+if(DEBUG) {
+    log_level = "dev";
+}
+
+app.use(morgan(log_level));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
