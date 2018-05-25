@@ -37,11 +37,6 @@ $ mongod
 $ npm app.js
 ```
 
-#### Required Frontend Dependencies
-* Python _3.6_
-* PyQt _5.10_
-* sip _4.19.7_
-* requests _2.18.4_
 
 #### Team Members:
 * [Susham Yerabolu](mailto:yerabolu@pdx.edu)
