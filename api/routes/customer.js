@@ -1,8 +1,7 @@
 
 "use strict";
 
-let express = require('express');
-let router = express.Router();
+let router = require('express').Router();
 
 const config = require('../config/config.js');
 const verifyToken = require(`${config.CONTROLLERS_PATH}/verifyToken`);

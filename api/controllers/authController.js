@@ -1,14 +1,13 @@
 "use strict";
 
 const config = require('../config/config');
-// import config from '../config/config';
 
 let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
 let customer = require('../models/customer');
 
 // Authenticate user; return token
-exports.authenticate = (req, res) => {
+exports.login = (req, res) => {
     let message, encrypted_password;
     let status = 200;
     let token = "";
@@ -22,8 +21,8 @@ exports.authenticate = (req, res) => {
     query.select('emailid password');
     query.exec((err, user) => {
         if (err) {
-            message = "Failed to log in.\nPlease verify your email and password";
-            status = 403;
+            message = "Failed to log in.\nPlease verify your email/password combination.";
+            status = 401;
         } else {
             message = "Login successful";
             encrypted_password = user.password;
@@ -41,7 +40,22 @@ exports.authenticate = (req, res) => {
     });
 
     res.status(status).json({
-        token: token,
+        success: !err,
+        err: err ? err : null,
         message: message,
+        token: token,
     });
+};
+
+exports.logout = (req, res) => {
+    let message = "Successfully logged out.";
+    let status = 200;
+
+    res.status(status).json({
+        success: true,
+        err: null,
+        message: message,
+        token: null,
+        auth: false,
+    })
 };

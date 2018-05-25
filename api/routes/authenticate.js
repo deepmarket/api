@@ -1,12 +1,14 @@
 
 "use strict";
 
+let router = require('express').Router();
+
 const config = require('../config/config');
-let express = require('express');
-let router = express.Router();
-let authController = require(`${config.CONTROLLERS_PATH}/authController`);
+const authController = require(`${config.CONTROLLERS_PATH}/authController`);
 
 /* Create a new customer */
-router.post('/', authController.authenticate);
+router.post('/login', authController.login);
+
+router.post('/logout', authController.logout);
 
 module.exports = router;

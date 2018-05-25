@@ -47,7 +47,7 @@ describe('Customer Authentication', function() {
         });
 
         it('should remove the customer by their unique `_id` attribute', function(done) {
-            chai.request(server).delete(`/api/v1/account/1234`)
+            chai.request(server).delete(`/api/v1/account/`)
                 .set('x-access-token', CUSTOMER_PAYLOAD.token)
                 .end(function(err, res) {
                     res.should.have.status(200);
@@ -65,6 +65,7 @@ describe('Customer Authentication', function() {
     });
 
     describe('Improper Account Management', function() {
+
         //TODO: set this up to use before and after hooks instead of describe scenarios
         describe('set up db for checking duplicate errors', function() {
             it('should create a new user account', function (done) {
@@ -101,7 +102,7 @@ describe('Customer Authentication', function() {
 
             it('should remove the customer by their unique `_id` successfully', function(done) {
                 chai.request(server)
-                    .delete(`/api/v1/account/1234`)
+                    .delete(`/api/v1/account/`)
                     .set("x-access-token", CUSTOMER_PAYLOAD.token)
                     .end(function(err, res) {
                         res.should.have.status(200);
@@ -112,7 +113,7 @@ describe('Customer Authentication', function() {
 
             it('should remove the customer by their unique `_id` unsuccessfully', function(done) {
                 chai.request(server)
-                    .delete(`/api/v1/account/1234`)
+                    .delete(`/api/v1/account/`)
                     .set("x-access-token", CUSTOMER_PAYLOAD.token)
                     .end(function(err, res) {
                         res.should.have.status(400);
