@@ -45,7 +45,7 @@ exports.addcustomer = (req, res) => {
         user = new customer({
             firstname: req.body.firstname,
             lastname: req.body.lastname,
-            emailid: req.body.emailid,
+            email: req.body.email,
             password: hash,
             status: "Active",
         });
@@ -54,10 +54,10 @@ exports.addcustomer = (req, res) => {
         user.save((err, new_user) => {
             if (err) {
                 if (err.code === 11000) {
-                    message = `Failed to create account.\nThe email '${req.body.emailid}' is already in use.`;
+                    message = `Failed to create account.\nThe email '${req.body.email}' is already in use.`;
                     status = 400;
                 } else {
-                    message = `Failed to create account.\nError: ${err.name}.`;
+                    message = `Failed to create account.\nError: ${err.name}: ${err.message}.`;
                     status = 500;
                 }
                 res.status(status).json({
@@ -71,7 +71,7 @@ exports.addcustomer = (req, res) => {
                 message = "Successfully created account.";
 
                 let jwt_payload = {
-                    email: req.body.emailid,
+                    // email: req.body.email,
                     id: new_user._id,
                 };
                 jwt.sign(jwt_payload, config.JWT_KEY, {expiresIn: '24h'}, (err, token) => {

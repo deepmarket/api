@@ -13,7 +13,7 @@ let Schema = mongoose.Schema;
 let customerSchema = new Schema({
     firstname: {type: String, required:true},
     lastname: {type: String, required: true},
-    emailid: {type: String, required: true, unique: true },
+    email: {type: String, required: true, unique: true },
     password: {type: String, required: true },
     status: {type: String, required: true},
     createdOn: {type: Date, default: Date.now},
