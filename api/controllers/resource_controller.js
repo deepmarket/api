@@ -1,6 +1,8 @@
 /**
+ *
  * @fileoverview This file implements the logic for the resource endpoints.
  * It is dependent on the resource route module.
+ *
  */
 
 
@@ -51,11 +53,12 @@ exports.getresourcesbycustomerid = (req, res) => {
 };
 
 exports.addresourcebycustomerid = (req, res) => {
-    let message;
+    let message, resource;
     let status = 200;
     let id = req.user_id;
 
-    let resource = new Resources({
+    // For some reason this has to be initialized earlier to work.
+    resource = new Resources({
         ip_address: req.body.ip_address,
         ram: req.body.ram,
         cores: req.body.cores,
@@ -69,7 +72,7 @@ exports.addresourcebycustomerid = (req, res) => {
         machine_name: req.body.machine_name
     });
 
-    resource.save(err => {
+    resource.save((err, new_resource) => {
         if(err) {
             if (err.code === 11000) {
                 message = `There was an error while adding the resource.\nError: ${err.name}`;
@@ -84,6 +87,7 @@ exports.addresourcebycustomerid = (req, res) => {
             success: !err,
             error: err ? err : null,
             message: message,
+            resource_id: new_resource ? new_resource._id : null,
         });
     });
 };

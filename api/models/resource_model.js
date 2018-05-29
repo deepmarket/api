@@ -1,8 +1,9 @@
 /**
-    TODO
+ * TODO
 */
 
-let Schema = require('mongoose').Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
 let resourceSchema = new Schema({
     ip_address: {
@@ -47,7 +48,7 @@ let resourceSchema = new Schema({
         default: Date.now
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true
     },
     createdOn: {
@@ -59,11 +60,11 @@ let resourceSchema = new Schema({
         default: Date.now
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true
     },
     updatedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true
     },
     machine_name: {
@@ -71,7 +72,6 @@ let resourceSchema = new Schema({
         required: true
     }
 });
-
 
 mongoose.model('Resources', resourceSchema);  // Register model
 let resources = mongoose.model('Resources'); // Instantiate model

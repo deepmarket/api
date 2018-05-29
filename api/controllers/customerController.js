@@ -3,7 +3,7 @@
 const config = require('../config/config');
 let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
-let customer = require('../models/customer');
+let customer = require('../models/customer_model');
 
 // TODO: not sure why we're even doing this as we can just pass around significantly less meaningful and guaranteedly
 // TODO: unique id's created by mongo? Should probably just refactor this whole thing. Grrr.

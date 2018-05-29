@@ -1,24 +1,25 @@
 /**
+ *
  * @fileoverview This file defines the api endpoints for resources.
  *
  */
 
 "use strict";
 
-let router = require('express').Router();
-
+const router = require('express').Router();
 const config = require('../config/config');
 const resources_controller = require(`${config.CONTROLLERS_PATH}/resource_controller`);
+const verifyToken = require(`${config.CONTROLLERS_PATH}/verifyToken`);
 
 // TODO: really can't think of a use for this
 // router.get('/', resources_controller.getallresources);
 
-router.get('/', resources_controller.getresourcesbycustomerid);
+router.get('/', verifyToken, resources_controller.getresourcesbycustomerid);
 
-router.post('/', resources_controller.addresourcebycustomerid);
+router.post('/', verifyToken, resources_controller.addresourcebycustomerid);
 
-router.put('/', resources_controller.updateresourcebycustomerid);
+router.put('/', verifyToken, resources_controller.updateresourcebycustomerid);
 
-router.delete('/:resourceId/', resources_controller.deleteresourcebyid);
+router.delete('/', verifyToken, resources_controller.deleteresourcebyid);
 
 module.exports = router;

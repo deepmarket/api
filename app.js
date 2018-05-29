@@ -7,7 +7,7 @@ let morgan = require('morgan');
 
 // let path = require('path');
 const config = require('./api/config/config.js');
-const resources = require(`${config.ROUTES_PATH}/resources.js`);
+const resources = require(`${config.ROUTES_PATH}/resource_route.js`);
 const jobs = require(`${config.ROUTES_PATH}/jobs.js`);
 const customer = require(`${config.ROUTES_PATH}/customer.js`);
 const authenticate = require(`${config.ROUTES_PATH}/authenticate.js`);

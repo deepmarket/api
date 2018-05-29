@@ -9,7 +9,7 @@
 
 const config = require('../config/config');
 var mongoose = require('mongoose');
-var jobs = require('../models/job');
+var jobs = require('../models/job_model');
 
 exports.getalljobs = function(req, res) {
     jobs.find(function(err, jobs) {

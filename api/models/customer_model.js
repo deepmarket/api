@@ -16,11 +16,10 @@ let customerSchema = new Schema({
     emailid: {type: String, required: true, unique: true },
     password: {type: String, required: true },
     status: {type: String, required: true},
-    createdOn: {type: Date, default: Date.now()},
-    updatedOn: {type: Date, default: Date.now()},
+    createdOn: {type: Date, default: Date.now},
+    updatedOn: {type: Date, default: Date.now},
 });
 
-// Create a model to interact with from the schema
 mongoose.model('Customers', customerSchema);  // Register model
 let customers = mongoose.model('Customers');  // instantiate model
 
