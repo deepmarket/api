@@ -57,7 +57,7 @@ mongoose.connection.on('disconnected', () => {
 // When the connection is open
 mongoose.connection.on('open', () => {
     if(DEBUG) {
-        console.log(`NOTICE: Using mongoose v${mongoose.version} ODM.`);
+        console.log(`NOTICE: Using mongoose v${mongoose.version} on the database at ${config.DB_URI}.`);
     }
 });
 
