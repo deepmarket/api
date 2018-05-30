@@ -4,7 +4,7 @@
 let express = require('express');
 let router = express.Router();
 
-let jobs_controller = require('../controllers/jobsController');
+let jobs_controller = require('../controllers/jobs_controller');
 
 
 /* Get all Jobs */
