@@ -21,6 +21,13 @@ config.ROUTES_PATH = "./api/routes";
 config.CONTROLLERS_PATH = "../controllers";
 config.MODELS_PATH = "./api/models";
 config.APPLICATION_CONFIG = "./api/config";
-config.JOB_SCHEDULED = "Scheduled";
+
+config.JOB_STATUS = {
+    SCHEDULED: "Scheduled",
+    PENDING: "Pending",
+    ACTIVE: "Active",
+    FINISHED: "Finished",
+    FAILED: "Failed",
+};
 
 module.exports = config;

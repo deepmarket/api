@@ -1,24 +1,24 @@
 "use strict";
 
-let express = require('express');
-let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
-let morgan = require('morgan');
+let express = require('express');  // Express server
+let bodyParser = require('body-parser');  // HTTP body parsing middleware giving us access to `req.body`
+let mongoose = require('mongoose');  // Standard Mongo ODM
+let morgan = require('morgan');  // Logging middleware
 
-// let path = require('path');
-const config = require('./api/config/config.js');
-const resources = require(`${config.ROUTES_PATH}/resource_route.js`);
-const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);
-const customer = require(`${config.ROUTES_PATH}/customer_route.js`);
-const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);
-
+const config = require('./api/config/config.js');  // Configuration details
+const resources = require(`${config.ROUTES_PATH}/resource_route.js`);  // Resource endpoints
+const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);  // Job endpoints
+const customer = require(`${config.ROUTES_PATH}/customer_route.js`);  // Customer endpoints
+const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);  // Authentication endpoints
 const DEBUG = true; // flag for verbose console output
-const PORT = process.env.test ? 1234 : process.env.PORT || 8000;
+
+// Selects applications port first by test, environment variable, and finally hardcoded.
+const PORT = process.env.test ? 1234 : process.env.PORT || 8080;
 
 let app = express();
 let router = express.Router();
 
-let log_level = "regular";
+let log_level = "tiny";
 if(DEBUG) {
     log_level = "dev";
 }
