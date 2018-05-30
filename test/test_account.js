@@ -9,7 +9,7 @@ chai.use(chai_http);
 
 process.env.test = true;
 
-describe('Customer Authentication', function() {
+describe('Customer Account Interaction', function() {
     const CUSTOMER_PAYLOAD  = {
         firstname: "Felix",
         lastname: "Da Housecat",
