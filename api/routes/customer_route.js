@@ -1,3 +1,8 @@
+/**
+ * @fileoverview This file implements the routes for the customer endpoints.
+ * It routes extend from the `/customer` endpoint
+ * @exports {customer router}
+ */
 
 "use strict";
 

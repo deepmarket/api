@@ -84,6 +84,7 @@ exports.addcustomer = (req, res) => {
                         error: err ? err : null,
                         message: message,
                         token: token,
+                        user: new_user,
                         // auth: true, // TODO: Not sure about this yet
                     });
                 });

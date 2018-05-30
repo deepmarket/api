@@ -13,7 +13,7 @@ describe('Customer Authentication', function() {
     const CUSTOMER_PAYLOAD  = {
         firstname: "Felix",
         lastname: "Da Housecat",
-        emailid: "abc@123.com",
+        email: "abc@123.com",
         password: "password",
     };
 
@@ -45,7 +45,6 @@ describe('Customer Authentication', function() {
                 done();
             });
         });
-
         it('should remove the customer by their unique `_id` attribute', function(done) {
             chai.request(server).delete(`/api/v1/account/`)
                 .set('x-access-token', CUSTOMER_PAYLOAD.token)
@@ -99,7 +98,6 @@ describe('Customer Authentication', function() {
                         done();
                     });
             });
-
             it('should remove the customer by their unique `_id` successfully', function(done) {
                 chai.request(server)
                     .delete(`/api/v1/account/`)
@@ -110,7 +108,6 @@ describe('Customer Authentication', function() {
                         done();
                     });
             });
-
             it('should remove the customer by their unique `_id` unsuccessfully', function(done) {
                 chai.request(server)
                     .delete(`/api/v1/account/`)
@@ -132,191 +129,7 @@ describe('Customer Authentication', function() {
     });
 });
 
-describe("config", function() {
-    const config = require("../api/config/config");
-    describe("constants", function() {
-        it("should have an api endpoint extension", function(done) {
-            let endpoint = config.API_ENDPOINT_EXTENSION;
-            expect(endpoint).to.be.a("string");
-            expect(endpoint, "/api/v1").to.equal("/api/v1");
-            done();
-        });
-
-        it("should have a database connection uri", function(done) {
-            let db_uri = config.DB_URI;
-            expect(db_uri).to.be.a("string");
-            expect(db_uri.split('/')).to.have.lengthOf(4);
-            expect(db_uri.split('/')[3], "ShareResources").to.equal('ShareResources');
-            done();
-        });
-
-        it("should maintain number for the number of salt rounds for bcrypt", function(done) {
-            let salts = config.SALT_ROUNDS;
-            expect(salts).to.be.a('number');
-            expect(salts).to.be.above(9);
-            done();
-        });
-    });
-
-    describe("constant paths", function() {
-        // TODO: mehhh... probably need to verify paths/dirs exist or something.
-        // it("should have an api folder")
-    });
-});
-
-// TODO
-// describe('/POST Resources', function() {
-//     it('it should add a Resources', function(done) {
-//         chai.request(baseUrl)
-//           .post('api/v1/resources/' + customer_id )
-//           .send({
-//             "ip_address": "10.364.235.668", // should be unique
-//             "ram": 4,
-//             "cores": 2,
-//             "cpus": 2,
-//             "gpus": 1,
-//             "price": 10,
-//             "machine_name": "the description of this machine"
-//           })
-//           .end(function(error, response, body) {
-//                     //expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//           });
-//     });
-// });
-//
-// describe('/GET Resources', function() {
-//     it('it should GET all the resources', function(done) {
-//         request.get({ url: baseUrl + 'api/v1/resources' },
-//             function(error, response, body) {
-//                 //var bodyObj = JSON.parse(body);
-//                 //expect(bodyObj.cpus).to.equal("2");
-//                 //expect(bodyObj.price).to.equal("10");
-//                     expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//             });
-//     });
-// });
-//
-// var customer_id ="5ac11ae51327c262728790cb"
-//
-// describe('/GET Resources one', function() {
-//     it('it should GET all the resources with a customer_id', function(done) {
-//         request.get({ url: baseUrl + 'api/v1/resources/' + customer_id },
-//             function(error, response, body) {
-//                 //var bodyObj = JSON.parse(body);
-//                 //expect(bodyObj.cpus).to.equal("2");
-//                 //expect(bodyObj.price).to.equal("10");
-//                     expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//             });
-//     });
-// });
-//
-//
-//
-// describe('/POST Customers', function() {
-//     it('it should add a customer', function(done) {
-//         chai.request(baseUrl)
-//           .post('api/v1/account')
-//           .send({
-//             "firstname":"soyoung","lastname":"kim","emailid":"sy6@pdx.edu", "password":"abcd123"
-//           }) //emailid should be unique
-//           .end(function(error, response, body) {
-//                     //expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//           });
-//     });
-// });
-//
-// describe('/GET Customers', function() {
-//     it('it should GET the customers with email id: sy6@pdx.edu', function(done) {
-//         request.get({ url: baseUrl + 'api/v1/account/sy6@pdx.edu' },
-//             function(error, response, body) {
-//                     expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//             });
-//     });
-// });
-//
-// describe('/POST Jobs', function() {
-//     it('it should add a Job', function(done) {
-//         chai.request(baseUrl)
-//           .post('api/v1/jobs')
-//           .send({
-//             "source_files": [
-//                 "1.js"
-//             ],
-//             "input_files": [
-//                 "2.js"
-//             ],
-//             "resources": [
-//                 {
-//                     "resourceId": "5abab56ee538724ad170b523",
-//                     "resourcePrice": 10
-//                 },
-//                 {
-//                     "resourceId": "5abab76ee538724ad170b523",
-//                     "resourcePrice": 15
-//                 }
-//             ],
-//             "workers": "2",
-//             "cores": "3",
-//             "memory": "100",
-//             "status": "Online",
-//             "customerId": "5abab56ee538724ad170b523",
-//             "createdBy": "5abab56ee538724ad170b523",
-//             "updatedBy": "5abab56ee538724ad170b523"
-//           })
-//           .end(function(error, response, body) {
-//                     //expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//           });
-//     });
-// });
-//
-// describe('/GET Jobs', function() {
-//     it('it should GET all the jobs', function(done) {
-//         request.get({ url: baseUrl + 'api/v1/jobs' },
-//             function(error, response, body) {
-//                     expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//             });
-//     });
-// });
-//
-// customer_id = "5abab56ee538724ad170b523"
-// describe('/GET Jobs by customer_id', function() {
-//     it('it should GET the jobs with a customer_id', function(done) {
-//         request.get({ url: baseUrl + 'api/v1/jobs/' + customer_id},
-//             function(error, response, body) {
-//                     expect(response.statusCode).to.equal(200);
-//                     console.log(body);
-//                 done();
-//             });
-//     });
-// });
-
-
-
 /*
-let mongoose = require("mongoose");
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../app');
-//let server = require('http://localhost:3000/');
-//var should = require("should");
-var expect = require("chai").expect;
-
-chai.use(chaiHttp);
-
 describe('/GET Resources', () => {
       it('it should GET all the resources', (done) => {
             chai.request(server)
