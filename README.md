@@ -21,7 +21,7 @@ _-- Node Modules --_
 * body-parser _1.18.2_
 * **Oh yea, and _ES6_**
 
-_To see a full list of current dependencies (including dev) run `npm list --depth=0`
+_To see a full list of current dependencies (including dev) run_ `npm list --depth=0`
 
 ##### To install:
 ```bash
@@ -37,11 +37,6 @@ $ mongod
 $ npm app.js
 ```
 
-#### Required Frontend Dependencies
-* Python _3.6_
-* PyQt _5.10_
-* sip _4.19.7_
-* requests _2.18.4_
 
 #### Team Members:
 * [Susham Yerabolu](mailto:yerabolu@pdx.edu)

@@ -7,9 +7,11 @@
 *.DS_Store
 
 # Except python files (just in case),
+!*.py
 !**/*.py
 
 # Javascript files,
+!*.js
 !**/*.js
 
 # and config files

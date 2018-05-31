@@ -1,45 +1,48 @@
 "use strict";
 
-let express = require('express');
-let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
-let morgan = require('morgan');
+let express = require('express');  // Express server
+let bodyParser = require('body-parser');  // HTTP body parsing middleware giving us access to `req.body`
+let mongoose = require('mongoose');  // Standard Mongo ODM
+let morgan = require('morgan');  // Logging middleware
 
-// let path = require('path');
-const config = require('./api/config/config.js');
-const resources = require(`${config.ROUTES_PATH}/resources.js`);
-const jobs = require(`${config.ROUTES_PATH}/jobs.js`);
-const customer = require(`${config.ROUTES_PATH}/customer.js`);
-const authenticate = require(`${config.ROUTES_PATH}/authenticate.js`);
-
+const config = require('./api/config/config.js');  // Configuration details
+const resources = require(`${config.ROUTES_PATH}/resource_route.js`);  // Resource endpoints
+const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);  // Job endpoints
+const customer = require(`${config.ROUTES_PATH}/customer_route.js`);  // Customer endpoints
+const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);  // Authentication endpoints
 const DEBUG = true; // flag for verbose console output
-const PORT = process.env.PORT || 8000;
+
+// Selects applications port first by test, environment variable, and finally hardcoded.
+const PORT = process.env.test ? 1234 : process.env.PORT || 8080;
 
 let app = express();
 let router = express.Router();
 
-app.use(morgan('dev'));
+let log_level = "tiny";
+if(DEBUG) {
+    log_level = "dev";
+}
+
+app.use(morgan(log_level));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-// All endpoints extend from /api/v1/
-app.use('/api/v1', router);
+// All endpoints should extend from `/api/v1/`
+app.use(config.API_ENDPOINT_EXTENSION, router);
 
-router.use('/authenticate', authenticate);
+router.use('/auth', authenticate);
 router.use('/account', customer);
 router.use('/resources', resources);
 router.use('/jobs', jobs);
 
 mongoose.set('bufferCommands', false);
-
-const dbURI = 'mongodb://localhost/ShareResources';
-
 mongoose.Promise = global.Promise;
 
 // Create the database connection
-mongoose.connect(dbURI).then(() => {
+mongoose.connect(config.DB_URI)
+    .then(() => {
         if(DEBUG) {
-            console.log(`Connection to '${dbURI}' successful.`);
+            console.log(`Connection to '${config.DB_URI}' successful.`);
         }
     }).catch((err) => {
         console.log(`ERROR: ${err}`);
@@ -54,7 +57,7 @@ mongoose.connection.on('disconnected', () => {
 // When the connection is open
 mongoose.connection.on('open', () => {
     if(DEBUG) {
-        console.log(`NOTICE: Using mongoose v${mongoose.version} ODM.`);
+        console.log(`NOTICE: Using mongoose v${mongoose.version} on the database at ${config.DB_URI}.`);
     }
 });
 
@@ -74,6 +77,10 @@ let server = app.listen(PORT, () => {
     }
 });
 
+/**
+ * This function is used by the test harness for the purpose
+ * of forcefully stopping the server in between tests.
+ */
 let stop = () => {
     if(DEBUG) {
         console.log("Closing server.");
