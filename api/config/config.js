@@ -1,8 +1,12 @@
-/* This file has the below configuration settings:
-	1. MONGODB Connection Settings
-	2. Global Paths to avoid hard coding in every file.
-	3. Third Party SECRET KEYS
-
+/**
+ * @fileoverview This file contains configuration details for the application.
+ * Namely, those are:
+ *  - Parameters for the DB name and location
+ *  - Json Web Token signature keys and salt parameters
+ *  - Standard pathing for the routes, models, and controller modules
+ *  - Possible job status' (Although this unlikely won't be used here)
+ *
+ * @exports {config} The applications configuration object.
  */
 
 "use strict";

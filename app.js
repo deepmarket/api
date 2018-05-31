@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 // All endpoints should extend from `/api/v1/`
 app.use(config.API_ENDPOINT_EXTENSION, router);
 
-router.use('/authenticate', authenticate);
+router.use('/auth', authenticate);
 router.use('/account', customer);
 router.use('/resources', resources);
 router.use('/jobs', jobs);
