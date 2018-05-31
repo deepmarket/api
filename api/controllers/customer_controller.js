@@ -5,8 +5,6 @@ let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
 let customer = require('../models/customer_model');
 
-// TODO: not sure why we're even doing this as we can just pass around significantly less meaningful and guaranteedly
-// TODO: unique id's created by mongo? Should probably just refactor this whole thing. Grrr.
 // exports.getidbyemailid = (req, res) => {
 //     let message;
 //     let status = 200;
@@ -50,7 +48,6 @@ exports.addcustomer = (req, res) => {
             status: "Active",
         });
 
-        // TODO: really need to fix this callback hell, yah?
         user.save((err, new_user) => {
             if (err) {
                 if (err.code === 11000) {

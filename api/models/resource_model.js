@@ -37,7 +37,6 @@ let resourceSchema = new Schema({
     },
     price: {
         type: Number,
-        required: true
     },
     active_from: {
         type: Date,

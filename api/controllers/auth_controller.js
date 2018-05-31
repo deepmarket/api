@@ -40,7 +40,7 @@ exports.login = (req, res) => {
             message = "Login successful";
             bcrypt.compare(plaintext_password, user.password).then((auth) => {
                 if(auth) {
-                    token = jwt.sign({user_id: user._id}, config.JWT_KEY);
+                    token = jwt.sign({id: user._id}, config.JWT_KEY);
                 }
                 res.status(status).json({
                     success: !err,
