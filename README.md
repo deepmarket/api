@@ -21,7 +21,7 @@ _-- Node Modules --_
 * body-parser _1.18.2_
 * **Oh yea, and _ES6_**
 
-_To see a full list of current dependencies (including dev) run `npm list --depth=0`
+_To see a full list of current dependencies (including dev) run_ `npm list --depth=0`
 
 ##### To install:
 ```bash
