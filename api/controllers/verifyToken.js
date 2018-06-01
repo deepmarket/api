@@ -14,7 +14,7 @@ let jwt = require('jsonwebtoken');
 function verifyToken(req, res, next) {
     let token = req.headers['x-access-token'];
     if(!token) {
-        return res.status(401).send({
+        return res.status(401).json({
             success: false,
             err: null,
             message: 'No token provided.',
@@ -23,10 +23,18 @@ function verifyToken(req, res, next) {
 
     jwt.verify(token, config.JWT_KEY, (err, decoded) => {
         if(err) {
-            return res.status(400).send({
+            return res.status(400).json({
                 success: false,
                 error: err ? err : null,
                 message: 'Failed to authenticate with provided token.',
+            });
+        }
+        // TODO: Deprecated. No
+        if(decoded.id === undefined) {
+            return res.status(500).json({
+                success: false,
+                error: null,
+                message: "This token is DEPRECATED. Please dump your db and generate new tokens at `/api/v1/auth/login`.",
             });
         }
 

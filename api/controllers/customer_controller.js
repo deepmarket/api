@@ -5,33 +5,29 @@ let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
 let customer = require('../models/customer_model');
 
-// exports.getidbyemailid = (req, res) => {
-//     let message;
-//     let status = 200;
-//
-//     // Find the customer by email id and subsequently select the `_id` property from the record.
-//     // customer_id will be used for subsequent requests, so send it back.
-//     customer.findOne({'emailid': req.params.emailId}, '_id', (err, customer_id) => {
-//         let id = null;
-//         if (err) {
-//             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
-//             status = 500;
-//         } else if (!customer_id) { // TODO: not sure why err isn't set when customer is not found.
-//             status = 400;
-//             message = `Failed to get id.\nThe email '${req.params.emailid}' could not be found.`;
-//         } else {
-//            message = "Successfully found id.";
-//            id = customer_id._id;
-//         }
-//
-//         res.status(status).json({
-//             success: !!customer_id,  // `!!` is shorthanded boolean conversion
-//             error: err ? err : null,
-//             message: message,
-//             "CustomerId": id,
-//         })
-//     });
-// };
+exports.get_customer_by_id = (req, res) => {
+    let message;
+    let status = 200;
+
+    customer.findById(req.user_id, (err, customer) => {
+        if (err) {
+            message = `Failed to get customer information.\nError: ${err.name}: ${err.message}`;
+            status = 500;
+        } else if (!customer) {
+            status = 400;
+            message = `Failed to get customer information.\nThe user with id '${req.user_id}' could not be found.`;
+        } else {
+           message = "Successfully fetched customer information.";
+        }
+
+        res.status(status).json({
+            success: !!customer,  // `!!` is shorthanded boolean conversion
+            error: err ? err : null,
+            message: message,
+            customer: customer,
+        })
+    });
+};
 
 /* Add a new customer to the collection */
 exports.addcustomer = (req, res) => {

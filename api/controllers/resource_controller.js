@@ -58,7 +58,7 @@ exports.addresourcebycustomerid = (req, res) => {
     let id = req.user_id;
 
     // For some reason this has to be initialized earlier to work.
-    resource = new Resources({
+        resource = new Resources({
         ip_address: req.body.ip_address,
         ram: req.body.ram,
         cores: req.body.cores,
