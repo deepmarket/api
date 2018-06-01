@@ -29,7 +29,7 @@ function verifyToken(req, res, next) {
                 message: 'Failed to authenticate with provided token.',
             });
         }
-        // TODO: Deprecated. No
+        // TODO: Deprecated.
         if(decoded.id === undefined) {
             return res.status(500).json({
                 success: false,

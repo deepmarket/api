@@ -80,12 +80,11 @@ exports.add_job = (req, res) => {
     // HDFS path where the files are uploaded, before submitting the job
     job.source_files.push(req.body.source_files);
     job.input_files.push(req.body.input_files);
-    console.log("Price: ", req.body.price);
 
     // Decrement users credits accordingly.
     let customer_promise = customer.findOneAndUpdate({_id: req.user_id}, {$inc: {credits: -req.body.price}}).exec();
     customer_promise.catch(err => {
-        message = `There was an error charging your account.\nError: ${err.name}: ${err.message}`;
+        message = `There was an error charging your account.\nError: ${err.name}: ${err.message}\n`;
         status = 500;
     });
 
