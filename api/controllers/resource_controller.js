@@ -87,7 +87,7 @@ exports.addresourcebycustomerid = (req, res) => {
             success: !err,
             error: err ? err : null,
             message: message,
-            resource_id: new_resource ? new_resource._id : null,
+            resource: new_resource ? new_resource : null,
         });
     });
 };
