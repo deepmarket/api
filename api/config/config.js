@@ -28,7 +28,7 @@ config.APPLICATION_CONFIG = "./api/config";
 
 config.JOB_STATUS = {
     SCHEDULED: "Scheduled",
-    PENDING: "Pending",
+    // PENDING: "Pending",  // Voted to remove this in lieu of scheduled
     ACTIVE: "Active",
     FINISHED: "Finished",
     FAILED: "Failed",

@@ -64,7 +64,6 @@ describe('Customer Account Interaction', function() {
     });
 
     describe('Improper Account Management', function() {
-
         //TODO: set this up to use before and after hooks instead of describe scenarios
         describe('set up db for checking duplicate errors', function() {
             it('should create a new user account', function (done) {
