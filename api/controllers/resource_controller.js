@@ -10,6 +10,7 @@
 
 const Resources = require('../models/resource_model');
 
+// Deprecated as of 5/22
 // exports.getallresources = function(req, res) {
 //     let message = "";
 //     let status = 200;
@@ -30,7 +31,7 @@ const Resources = require('../models/resource_model');
 //     });
 // };
 
-exports.getresourcesbycustomerid = (req, res) => {
+exports.get_resources_by_customer_id = (req, res) => {
     let message = "";
     let status = 200;
     let id = req.user_id;
@@ -52,7 +53,7 @@ exports.getresourcesbycustomerid = (req, res) => {
 
 };
 
-exports.addresourcebycustomerid = (req, res) => {
+exports.add_resource_by_customer_id = (req, res) => {
     let message, resource;
     let status = 200;
     let id = req.user_id;
@@ -92,8 +93,7 @@ exports.addresourcebycustomerid = (req, res) => {
     });
 };
 
-/* UPDATE RESOURCE DETAILS */
-exports.updateresourcebycustomerid = (req, res) => {
+exports.update_resource_by_customer_id = (req, res) => {
     res.status(501).json({
         success: true,
         error: null,
@@ -101,7 +101,7 @@ exports.updateresourcebycustomerid = (req, res) => {
     });
 };
 
-exports.deleteresourcebyid = (req, res) => {
+exports.delete_resource_by_id = (req, res) => {
     let message;
     let status = 200;
     let id = req.user_id;
