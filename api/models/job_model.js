@@ -47,11 +47,15 @@ let jobSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    // Not sure what the intended purpose was; updated model with `price` field instead.
-    // resources: [{
-    //     resource_id: String,
-    //     price: Number
-    // }],
+    //To keep track of the resources that are used to run the job
+    resources: [{
+         resource_id: String,
+         price: Number
+     }],
+    timeslot_id: {
+        type: Number,
+        required: true
+    },
     price: {
         type: Number,
         required: true,
