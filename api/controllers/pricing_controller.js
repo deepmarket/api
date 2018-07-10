@@ -24,10 +24,12 @@ exports.get_prices = (req, res) => {
 
 
     Prices.find({
+        // Find prices generated withing the current day's time frame
         created_on: {
             $gte: midnight,
             $lte: midnight_tomorrow
         },
+        // There should never be time slots outside this range but why not
         time_slot: {
             $gte: 0,
             $lte: 3
