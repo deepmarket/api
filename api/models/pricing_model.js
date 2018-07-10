@@ -10,7 +10,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let priceSchema = new Schema({
-   //Combination of time_slot and the created_on will give the price details for that particular day
+   // Combination of time_slot and created_on fields will give the price details for that particular day
     time_slot: {
         type: Number,
         required: true,
@@ -54,7 +54,6 @@ let priceSchema = new Schema({
     }
 });
 
-// Create a model to interact with from the schema
 mongoose.model('Prices', priceSchema);
 let prices = mongoose.model('Price');
 
