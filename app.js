@@ -10,25 +10,27 @@ const resources = require(`${config.ROUTES_PATH}/resource_route.js`);  // Resour
 const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);  // Job endpoints
 const customer = require(`${config.ROUTES_PATH}/customer_route.js`);  // Customer endpoints
 const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);  // Authentication endpoints
-const DEBUG = true; // flag for verbose console output
+const DEBUG = process.env.DEBUG || true; // flag for verbose console output
 
 // Selects applications port first by test, environment variable, and finally hardcoded.
-const PORT = process.env.test ? 1234 : process.env.PORT || 8080;
+const PORT = process.env.API_TEST ? 1234 : process.env.PORT || 8080;
 
 let app = express();
 let router = express.Router();
 
-let log_level = "tiny";
-if(DEBUG) {
-    log_level = "dev";
-}
+// Show extended output in debug mode
+let log_level = DEBUG ? "dev" : "tiny";
 
 app.use(morgan(log_level));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 // All endpoints should extend from `/api/v1/`
-app.use(config.API_ENDPOINT_EXTENSION, router);
+app.use(config.API_ENDPOINT, router);
+
+app.get(config.API_ENDPOINT, (req, res) => {
+    res.send("<div style='margin: auto; display: flex'>API is: &nbsp;<div style='color: lightseagreen'> Online</div></div>");
+});
 
 router.use('/auth', authenticate);
 router.use('/account', customer);
