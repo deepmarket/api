@@ -35,26 +35,18 @@ let priceSchema = new Schema({
         required: true,
         min: 0,
     },
-    created_on: {
+    createdOn: {
         type: Date,
         default: Date.now,
         required: true
     },
-    updated_on: {
+    updatedOn: {
         type: Date,
         default: Date.now
     },
-    created_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
-    updated_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    }
-});
+});//, {collection: "pricing"});
 
-mongoose.model('Prices', priceSchema);
-let prices = mongoose.model('Prices');
+mongoose.model('Pricing', priceSchema);
+let prices = mongoose.model('Pricing');
 
 module.exports = prices;

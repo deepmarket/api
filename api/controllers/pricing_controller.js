@@ -25,18 +25,22 @@ exports.get_prices = (req, res) => {
 
     Prices.find({
         // Find prices generated withing the current day's time frame
-        created_on: {
-            $gte: midnight,
-            $lte: midnight_tomorrow
-        },
-        // There should never be time slots outside this range but why not
-        time_slot: {
-            $gte: 0,
-            $lte: 3
-        }}, (err, prices) => {
+        // created_on: {
+        //     $gte: midnight,
+        //     $lte: midnight_tomorrow
+        // },
+        // // There should never be time slots outside this range but why not
+        // time_slot: {
+        //     $gte: 0,
+        //     $lte: 3
+        // }
+        }, (err, prices) => {
             if(err) {
                 message = `There was an error while retrieving prices.\nError: ${err.name}`;
                 status = 500;
+            } else if (!prices) {
+                message = "Prices have not been generated yet.";
+                status = 301;
             } else {
                 message = "Prices retrieved successfully.";
             }
