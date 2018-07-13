@@ -10,6 +10,7 @@ const resources = require(`${config.ROUTES_PATH}/resource_route.js`);  // Resour
 const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);  // Job endpoints
 const customer = require(`${config.ROUTES_PATH}/customer_route.js`);  // Customer endpoints
 const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);  // Authentication endpoints
+const pricing = require(`${config.ROUTES_PATH}/pricing_route`);  // Pricing endpoints
 const DEBUG = process.env.DEBUG || true; // flag for verbose console output
 
 // Selects applications port first by test, environment variable, and finally hardcoded.
@@ -36,6 +37,7 @@ router.use('/auth', authenticate);
 router.use('/account', customer);
 router.use('/resources', resources);
 router.use('/jobs', jobs);
+router.use('/pricing', pricing);
 
 mongoose.set('bufferCommands', false);
 mongoose.Promise = global.Promise;
