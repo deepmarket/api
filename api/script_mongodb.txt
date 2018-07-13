@@ -153,10 +153,12 @@ db.job.update({ "_id" : ObjectId("5abb10dae538724ad170b535") }, { $set: { "resou
 13.Create Pricing Collection
 db.createCollection("pricing", { validator:{ $jsonSchema:{ bsonType: "object",required: ["time_slot", "cpus", "gpus", "memory","disk_space","createdOn","updatedOn"],properties: { time_slot: { bsonType: "int", description:"must be a int and its value must be 0-3 inclusive"}, cpus: { bsonType: "double", description: "must be an floating number and is required"}, gpus: { bsonType: "double", description: "must be an double and is required"}, memory: { bsonType: "double", description: "must be an double and is required" }, disk_space: { bsonType: "double", description: "must be a double and is required" },createdOn: { bsonType: "date", description: "must be a date and is required" }, updatedOn: { bsonType: "date", description: "must be a date and is not required" }, createdBy: { bsonType: "objectId", description: "must be an objectId and is required" }, updatedBy: { bsonType: "objectId", description: "must be an objectId and is not required" }}}}})
 
+14. Insert Pricing data
+db.pricing.insertOne({time_slot:NumberInt(0), cpus:0.001,gpus:0.001,memory:00001, disk_space:0.001,createdOn:new Date(Date.now()),updatedOn: new Date(Date.now())})
 
 15. Delete collections
 
 	1) db.job.drop()
 	2) db.customer.drop()
 	3) db.resources.drop()
-	4) db.
+	4) db.pricing.drop()
