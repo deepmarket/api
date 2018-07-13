@@ -55,6 +55,6 @@ let priceSchema = new Schema({
 });
 
 mongoose.model('Prices', priceSchema);
-let prices = mongoose.model('Price');
+let prices = mongoose.model('Prices');
 
 module.exports = prices;
