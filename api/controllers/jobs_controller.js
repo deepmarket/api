@@ -66,6 +66,7 @@ exports.add_job = (req, res) => {
         workers: req.body.workers,
         cores: req.body.cores,
         memory: req.body.memory,
+        timeslot_id: req.body.timeslot_id,
         status: config.JOB_STATUS.SCHEDULED,
         price: req.body.price,
         start_time: Date.now(),
