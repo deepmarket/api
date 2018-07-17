@@ -44,7 +44,9 @@ let priceSchema = new Schema({
         type: Date,
         default: Date.now
     },
-}, {collection: "pricing"});
+});
+// TODO: Verify model works w/o the following.
+//}, {collection: "pricing"});
 
 mongoose.model('Pricing', priceSchema);
 let prices = mongoose.model('Pricing');
