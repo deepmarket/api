@@ -29,6 +29,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 // All endpoints should extend from `/api/v1/`
 app.use(config.API_ENDPOINT, router);
 
+app.get('/', (req, res) => {
+    res.redirect(config.API_ENDPOINT)
+});
+
 app.get(config.API_ENDPOINT, (req, res) => {
     res.send("<div style='margin: auto; display: flex'>API is: &nbsp;<div style='color: lightseagreen'> Online</div></div>");
 });
