@@ -17,7 +17,7 @@ _-- Node Modules --_
 * ExpressJs _4.16.2_ 
 * mongoose _5.1.1_
 * jsonwebtoken _8.2.0_
-* bcrypt _2.4.3_
+* bcrypt _3.0.0_
 * body-parser _1.18.2_
 * **Oh yea, and _ES6_**
 

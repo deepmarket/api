@@ -21,7 +21,7 @@ describe("config", function() {
     const config = require("../api/config/config");
     describe("constants", function() {
         it("should have an api endpoint extension", function(done) {
-            let endpoint = config.API_ENDPOINT_EXTENSION;
+            let endpoint = config.API_ENDPOINT;
             expect(endpoint).to.be.a("string");
             expect(endpoint, "/api/v1").to.equal("/api/v1");
             done();

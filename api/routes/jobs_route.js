@@ -21,6 +21,6 @@ router.post('/', verifyToken, jobs_controller.add_job);
 router.put('/job_id', verifyToken, jobs_controller.update_job_status_by_job_id);
 
 /* DELETE Job */
-router.delete('/:job_id/', verifyToken, jobs_controller.delete_job_by_job_id);
+router.delete('/:job_id', verifyToken, jobs_controller.delete_job_by_job_id);
 
 module.exports = router;

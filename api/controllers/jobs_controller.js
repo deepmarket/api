@@ -8,6 +8,7 @@
 "use strict";
 
 const config = require('../config/config');
+const customer = require("../models/customer_model");
 const jobs = require('../models/job_model');
 
 exports.get_all_jobs = (req, res) => {
@@ -65,9 +66,9 @@ exports.add_job = (req, res) => {
         workers: req.body.workers,
         cores: req.body.cores,
         memory: req.body.memory,
+        timeslot_id: req.body.timeslot_id,
         status: config.JOB_STATUS.SCHEDULED,
-        start_time: Date.now(),
-        end_time: Date.now(),
+        price: req.body.price,
         customer_id: req.user_id,
         created_on: Date.now(),
         updated_on: Date.now(),
@@ -79,10 +80,16 @@ exports.add_job = (req, res) => {
     job.source_files.push(req.body.source_files);
     job.input_files.push(req.body.input_files);
 
+    // Decrement users credits accordingly.
+    let customer_promise = customer.findOneAndUpdate({_id: req.user_id}, {$inc: {credits: -req.body.price}}).exec();
+    customer_promise.catch(err => {
+        message = `There was an error charging your account.\nError: ${err.name}: ${err.message}\n`;
+        status = 500;
+    });
 
     job.save((err, job) => {
         if (err) {
-            message = `There was an error while trying to add the job to the queue.\nError: ${err.name}`;
+            message += `There was an error while trying to add the job to the queue.\nError: ${err.name}`;
             status = 500;
         } else {
             message = "Successfully added job to the queue.";
@@ -94,6 +101,7 @@ exports.add_job = (req, res) => {
             job: job
         });
     });
+
 };
 
 /* UPDATE job DETAILS */
@@ -114,7 +122,7 @@ exports.delete_job_by_job_id = function(req, res) {
     let message = "";
 
     jobs.remove({
-        id: req.params.job_id,
+        _id: req.params.job_id,
         customer_id: req.user_id,
     }, (err) => {
         if (err) {

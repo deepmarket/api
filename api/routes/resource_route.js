@@ -14,12 +14,12 @@ const verifyToken = require(`${config.CONTROLLERS_PATH}/verifyToken`);
 // TODO: really can't think of a use for this
 // router.get('/', resources_controller.getallresources);
 
-router.get('/', verifyToken, resources_controller.getresourcesbycustomerid);
+router.get('/', verifyToken, resources_controller.get_resources_by_customer_id);
 
-router.post('/', verifyToken, resources_controller.addresourcebycustomerid);
+router.post('/', verifyToken, resources_controller.add_resource_by_customer_id);
 
-router.put('/', verifyToken, resources_controller.updateresourcebycustomerid);
+router.put('/', verifyToken, resources_controller.update_resource_by_customer_id);
 
-router.delete('/', verifyToken, resources_controller.deleteresourcebyid);
+router.delete('/', verifyToken, resources_controller.delete_resource_by_id);
 
 module.exports = router;

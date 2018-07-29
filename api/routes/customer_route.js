@@ -14,7 +14,7 @@ let customer_controller = require(`${config.CONTROLLERS_PATH}/customer_controlle
 
 
 /* GET ALL RESOURCES */
-// router.get('/', customer_controller.getidbyemailid);
+router.get('/', verifyToken, customer_controller.get_customer_by_id);
 
 // Create a new customer
 router.post('/', customer_controller.addcustomer);

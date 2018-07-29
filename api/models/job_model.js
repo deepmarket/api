@@ -47,10 +47,19 @@ let jobSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
+    //To keep track of the resources that are used to run the job
     resources: [{
-        resource_id: String,
-        price: Number
-    }],
+         resource_id: String,
+         price: Number
+     }],
+    timeslot_id: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
     created_on: {
         type: Date,
         default: Date.now,

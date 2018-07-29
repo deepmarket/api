@@ -25,7 +25,7 @@ exports.login = (req, res) => {
     customer.findOne({"email": req.body.email}, "email password", (err, user) => {
         if (err) {
             message = "Failed to log in.\nPlease verify your email/password combination.";
-            status = 401;
+            status = 400;
         } else if(!user) {
             message = "The provided email/password combination could not be found";
             status = 401;
@@ -38,7 +38,7 @@ exports.login = (req, res) => {
             });
         } else {
             message = "Login successful";
-            bcrypt.compare(plaintext_password, user.password).then((auth) => {
+            bcrypt.compare(plaintext_password, user.password).then(auth => {
                 if(auth) {
                     token = jwt.sign({id: user._id}, config.JWT_KEY);
                 }
@@ -50,7 +50,7 @@ exports.login = (req, res) => {
                     auth: true,
                 });
             }).catch(err => {
-                console.log(`Error in authentication controller: ${err.name}`);
+                console.log(`Error in auth controller: ${err.name}`);
                 message = "Failed to log in.\nPlease verify your email and password";
                 status = 401;
                 res.status(status).json({
