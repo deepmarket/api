@@ -108,7 +108,7 @@ exports.delete_resource_by_id = (req, res) => {
 
     Resources.remove({
         owner: id,
-        _id: req.body.resource_id,
+        _id: req.params.resource_id,
     }, (err) => {
         if(err) {
             message = `There was an error while deleting the resource: ${req.body.resource_id}.\nError: ${err.name}`;
@@ -116,6 +116,12 @@ exports.delete_resource_by_id = (req, res) => {
         } else {
             message = "Resource deleted successfully";
         }
+
+        // Housekeeping
+        if(req.body.resource_id) {
+            message += "\nNOTICE: This endpoint is being deprecated. Please pass 'resource_id' as the endpoint."
+        }
+
         res.status(status).json({
             success: !err,
             error: err ? err : null,

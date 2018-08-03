@@ -32,6 +32,7 @@ let jobSchema = new Schema({
     },
     status: {
         type: String,
+        default: "PENDING",
         required: true
     },
     start_time: {

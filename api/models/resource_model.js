@@ -48,7 +48,6 @@ let resourceSchema = new Schema({
     },
     owner: {
         type: Schema.Types.ObjectId,
-        required: true
     },
     createdOn: {
         type:Date,
