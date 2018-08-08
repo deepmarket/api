@@ -86,7 +86,6 @@ exports.addcustomer = (req, res) => {
     });
 };
 
-/* UPDATE RESOURCE DETAILS */
 exports.updateprofilebyid = (req, res) => {
     let status = 501;
     let message = "NOT IMPLEMENTED";
@@ -98,7 +97,7 @@ exports.updateprofilebyid = (req, res) => {
     });
 };
 
-/* DELETE PRODUCT */
+// TODO: rename this
 exports.deletecustomerbyid = (req, res) => {
     let message = "";
     let status = 200;

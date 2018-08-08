@@ -6,6 +6,7 @@ let mongoose = require('mongoose');  // Standard Mongo ODM
 let morgan = require('morgan');  // Logging middleware
 
 const config = require('./api/config/config.js');  // Configuration details
+const db = require('./db.js');
 const resources = require(`${config.ROUTES_PATH}/resource_route.js`);  // Resource endpoints
 const jobs = require(`${config.ROUTES_PATH}/jobs_route.js`);  // Job endpoints
 const customer = require(`${config.ROUTES_PATH}/customer_route.js`);  // Customer endpoints
@@ -43,58 +44,91 @@ router.use('/resources', resources);
 router.use('/jobs', jobs);
 router.use('/pricing', pricing);
 
-mongoose.set('bufferCommands', false);
-mongoose.Promise = global.Promise;
+// mongoose.set('bufferCommands', false);
+// mongoose.Promise = global.Promise;
+//
+// // Create the database connection
+// mongoose.connect(config.DB_URI)
+//     .then(() => {
+//         if(DEBUG) {
+//             // console.log(`Connection to '${config.DB_URI}' successful.`);
+//         }
+//     }).catch((err) => {
+//         console.error(`ERROR: ${err}`);
+//         console.log("NOTICE: Continuing without database connection.")
+//     });
+//
+// // When the connection is disconnected
+// mongoose.connection.on('disconnected', () => {
+//     console.log('NOTICE: Connection to database closed.');
+// });
+//
+// // When the connection is open
+// mongoose.connection.on('open', () => {
+//     // if(DEBUG) {
+//     //     console.log(`NOTICE: Using mongoose v${mongoose.version} on the database at ${config.DB_URI}.`);
+//     // }
+// });
+//
+// // If the Node process ends, close the Mongoose connection
+// process.on('SIGINT', () => {
+//     mongoose.connection.close(() => {
+//         if(DEBUG) {
+//             console.log('Mongoose default connection disconnected through app termination');
+//         }
+//         process.exit(0);
+//     });
+// });
 
-// Create the database connection
-mongoose.connect(config.DB_URI)
-    .then(() => {
-        if(DEBUG) {
-            console.log(`Connection to '${config.DB_URI}' successful.`);
+// app.listen(PORT, () => {
+//     if(DEBUG) {
+//         console.log(`app listening on port: ${PORT}.`);
+//     }
+// });
+
+db.open_connection(config.DB_URI, DEBUG);
+
+// ()=>{} is js noop
+const noop = ()=>{};
+
+/**
+ * This function is used primarily by the test harness for the purpose
+ * of creating a new server.
+ *
+ * @returns {Promise<any>} A promise that resolves the new server.
+ */
+let create_server = () => {
+    return new Promise((resolve, reject) => {
+        try {
+            app.listen(PORT, () => {
+                DEBUG ? console.log(`Application open on port: ${PORT}.`) : noop;
+                resolve(app);
+            })
+        } catch (err) {
+            reject(err);
         }
-    }).catch((err) => {
-        console.log(`ERROR: ${err}`);
-        console.log("NOTICE: Continuing without database connection.")
     });
-
-// When the connection is disconnected
-mongoose.connection.on('disconnected', () => {
-    console.log('NOTICE: Connection to database closed.');
-});
-
-// When the connection is open
-mongoose.connection.on('open', () => {
-    if(DEBUG) {
-        console.log(`NOTICE: Using mongoose v${mongoose.version} on the database at ${config.DB_URI}.`);
-    }
-});
-
-// If the Node process ends, close the Mongoose connection
-process.on('SIGINT', () => {
-    mongoose.connection.close(() => {
-        if(DEBUG) {
-            console.log('Mongoose default connection disconnected through app termination');
-        }
-        process.exit(0);
-    });
-});
-
-let server = app.listen(PORT, () => {
-    if(DEBUG) {
-        console.log(`app listening on port: ${PORT}.`);
-    }
-});
+};
 
 /**
  * This function is used by the test harness for the purpose
- * of forcefully stopping the server in between tests.
+ * of forcefully stopping the server.
  */
-let stop = () => {
-    if(DEBUG) {
-        console.log("Closing server.");
-    }
-    server.close();
+let stop_server = (server) => {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log(typeof server);
+            server.close(() => {
+                DEBUG ? console.log("Closing server.") : noop;
+                resolve(process.exit(0));
+            });
+        } catch(err) {
+            reject(err);
+        }
+    });
 };
 
-module.exports.server = server;
-module.exports.stop = stop;
+
+// module.exports.server = server;
+module.exports.create = create_server;
+module.exports.close = stop_server;

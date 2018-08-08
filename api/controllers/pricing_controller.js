@@ -85,7 +85,7 @@ exports.add_price = (req, res) => {
             success: !err,
             error: err ? err : null,
             message: message,
-            resource: new_price_field ? new_price_field : null,
+            data: new_price_field ? new_price_field : null,
         });
     });
 };
