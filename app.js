@@ -2,7 +2,6 @@
 
 let express = require('express');  // Express server
 let bodyParser = require('body-parser');  // HTTP body parsing middleware giving us access to `req.body`
-let mongoose = require('mongoose');  // Standard Mongo ODM
 let morgan = require('morgan');  // Logging middleware
 
 const config = require('./api/config/config.js');  // Configuration details
@@ -14,8 +13,8 @@ const authenticate = require(`${config.ROUTES_PATH}/auth_route.js`);  // Authent
 const pricing = require(`${config.ROUTES_PATH}/pricing_route`);  // Pricing endpoints
 const DEBUG = process.env.DEBUG || true; // flag for verbose console output
 
-// Selects applications port first by test, environment variable, and finally hardcoded.
-const PORT = process.env.API_TEST ? 1234 : process.env.PORT || 8000;
+// Strategically defines servers port in order of test, environment variable, and finally hardcoded.
+const PORT = process.env.API_TEST ? 1234 : process.env.SERVER_PORT || 8000;
 
 let app = express();
 let router = express.Router();
@@ -23,21 +22,25 @@ let router = express.Router();
 // Show extended output in debug mode
 let log_level = DEBUG ? "dev" : "tiny";
 
+// Instantiate middleware
 app.use(morgan(log_level));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-// All endpoints should extend from `/api/v1/`
+// Extend default endpoint to `/api/v1/`
 app.use(config.API_ENDPOINT, router);
 
+// Redirect req's from `/` to `/api/v1/`
 app.get('/', (req, res) => {
     res.redirect(config.API_ENDPOINT)
 });
 
+// Display message at `/api/v1/` if the server is online
 app.get(config.API_ENDPOINT, (req, res) => {
     res.send("<div style='margin: auto; display: flex'>API is: &nbsp;<div style='color: lightseagreen'> Online</div></div>");
 });
 
+// Define the server's endpoints
 router.use('/auth', authenticate);
 router.use('/account', customer);
 router.use('/resources', resources);
