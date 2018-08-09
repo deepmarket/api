@@ -15,7 +15,7 @@ const pricing = require(`${config.ROUTES_PATH}/pricing_route`);  // Pricing endp
 const DEBUG = process.env.DEBUG || true; // flag for verbose console output
 
 // Selects applications port first by test, environment variable, and finally hardcoded.
-const PORT = process.env.API_TEST ? 1234 : process.env.PORT || 8080;
+const PORT = process.env.API_TEST ? 1234 : process.env.PORT || 8000;
 
 let app = express();
 let router = express.Router();
@@ -44,55 +44,28 @@ router.use('/resources', resources);
 router.use('/jobs', jobs);
 router.use('/pricing', pricing);
 
-// mongoose.set('bufferCommands', false);
-// mongoose.Promise = global.Promise;
-//
-// // Create the database connection
-// mongoose.connect(config.DB_URI)
-//     .then(() => {
-//         if(DEBUG) {
-//             // console.log(`Connection to '${config.DB_URI}' successful.`);
-//         }
-//     }).catch((err) => {
-//         console.error(`ERROR: ${err}`);
-//         console.log("NOTICE: Continuing without database connection.")
-//     });
-//
-// // When the connection is disconnected
-// mongoose.connection.on('disconnected', () => {
-//     console.log('NOTICE: Connection to database closed.');
-// });
-//
-// // When the connection is open
-// mongoose.connection.on('open', () => {
-//     // if(DEBUG) {
-//     //     console.log(`NOTICE: Using mongoose v${mongoose.version} on the database at ${config.DB_URI}.`);
-//     // }
-// });
-//
-// // If the Node process ends, close the Mongoose connection
-// process.on('SIGINT', () => {
-//     mongoose.connection.close(() => {
-//         if(DEBUG) {
-//             console.log('Mongoose default connection disconnected through app termination');
-//         }
-//         process.exit(0);
-//     });
-// });
-
-// app.listen(PORT, () => {
-//     if(DEBUG) {
-//         console.log(`app listening on port: ${PORT}.`);
-//     }
-// });
 
 db.open_connection(config.DB_URI, DEBUG);
 
-// ()=>{} is js noop
-const noop = ()=>{};
+// If the Node process ends, close the Mongoose connection
+process.on('SIGINT', () => {
+    db.close_connection();
+    process.exit(0);
+});
 
 /**
- * This function is used primarily by the test harness for the purpose
+ * This function should be used as a no-op placeholder.
+ * `()=>{}` is effectively equivalent to `Function.prototype`,
+ * however, it's heavily optimized in V8.
+ */
+const noop = ()=>{};
+
+app.listen(PORT, () => {
+    DEBUG ? console.log(`Application open on port: ${PORT}.`) : noop;
+});
+
+/**
+ * This function should be used primarily by the test harness for the purpose
  * of creating a new server.
  *
  * @returns {Promise<any>} A promise that resolves the new server.
@@ -111,7 +84,7 @@ let create_server = () => {
 };
 
 /**
- * This function is used by the test harness for the purpose
+ * This function should be used by the test harness for the purpose
  * of forcefully stopping the server.
  */
 let stop_server = (server) => {
@@ -128,7 +101,6 @@ let stop_server = (server) => {
     });
 };
 
-
-// module.exports.server = server;
+// Expose server to external resources
 module.exports.create = create_server;
 module.exports.close = stop_server;

@@ -6,9 +6,21 @@ let mongoose = require('mongoose');
 
 mongoose.set('bufferCommands', false);
 
+
+// TODO: refactor so this is more OOP-esque...
 let connect = async (db_name, debug=false) => {
 
     try {
+        // TODO: i.e. add this to the constructor
+        // Log mongoose events
+        ['open', 'disconnected'].forEach(db_event => {
+            mongoose.connection.on(db_event, () => {
+                if(debug) {
+                    console.log(`NOTICE: Database is now ${db_event}.`);
+                }
+            });
+        });
+
         await mongoose.connect(db_name);
     } catch(err) {
         console.error(`ERROR: ${err}`);
@@ -16,14 +28,6 @@ let connect = async (db_name, debug=false) => {
         // Can't do much without a db connection; exit.
         process.exit(1)
     } finally {
-
-        mongoose.connection.on(['open', 'disconnected'].forEach((goose_event) => {
-            if(debug) {
-                console.log(`NOTICE: database is now ${goose_event}`);
-            }
-        }));
-
-        // If the Node process ends, close the database connection
         process.on('SIGINT', () => {
             mongoose.connection.close(() => {
                 if(debug) {
@@ -35,4 +39,12 @@ let connect = async (db_name, debug=false) => {
     }
 };
 
+// TODO: Add this to the destructor...
+let close = () => {
+    mongoose.connection.close(() => {
+        console.log('NOTICE: Closing database connection');
+    })
+};
+
 module.exports.open_connection = connect;
+module.exports.close_connection = close;
