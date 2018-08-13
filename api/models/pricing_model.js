@@ -48,7 +48,7 @@ let priceSchema = new Schema({
 // TODO: Verify model works w/o the following.
 //}, {collection: "pricing"});
 
-mongoose.model('Pricing', priceSchema);
-let prices = mongoose.model('Pricing');
+mongoose.model('Price', priceSchema);
+let prices = mongoose.model('Price');
 
 module.exports = prices;

@@ -14,7 +14,7 @@ const pricing = require(`${config.ROUTES_PATH}/pricing_route`);  // Pricing endp
 const DEBUG = process.env.DEBUG || true; // flag for verbose console output
 
 // Strategically defines servers port in order of test, environment variable, and finally hardcoded.
-const PORT = process.env.API_TEST ? 1234 : process.env.SERVER_PORT || 8000;
+const PORT = process.env.API_TEST ? 1234 : process.env.SERVER_PORT || 8080;
 
 let app = express();
 let router = express.Router();
