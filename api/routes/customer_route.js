@@ -17,7 +17,7 @@ let customer_controller = require(`${config.CONTROLLERS_PATH}/customer_controlle
 router.get('/', verifyToken, customer_controller.get_customer_by_id);
 
 // Create a new customer
-router.post('/', customer_controller.addcustomer);
+router.post('/', customer_controller.add_customer);
 
 // Update a customer's details
 router.put('/', verifyToken, customer_controller.updateprofilebyid);

@@ -5,6 +5,13 @@ let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
 let customer = require('../models/customer_model');
 
+function good_user(user_request) {
+    return user_request.hasOwnProperty("firstname") &&
+        user_request.hasOwnProperty("lastname") &&
+        user_request.hasOwnProperty("email") &&
+        user_request.hasOwnProperty("password");
+}
+
 exports.get_customer_by_id = (req, res) => {
     let message;
     let status = 200;
@@ -30,10 +37,21 @@ exports.get_customer_by_id = (req, res) => {
 };
 
 /* Add a new customer to the collection */
-exports.addcustomer = (req, res) => {
+exports.add_customer = (req, res) => {
     let user;
     let message = "";
     let status = 200;
+
+    if(!good_user(req.body)) {
+        status = 403;
+        res.status(status).json({
+            success: false,
+            error: "Missing body parameter.",
+            message: "Nothing important",
+            token: null,
+        });
+        return;
+    }
 
     bcrypt.hash(req.body.password, config.SALT_ROUNDS, (err, hash) => {
         user = new customer({
@@ -48,17 +66,16 @@ exports.addcustomer = (req, res) => {
             if (err) {
                 if (err.code === 11000) {
                     message = `Failed to create account.\nThe email '${req.body.email}' is already in use.`;
-                    status = 400;
+                    status = 403;
                 } else {
                     message = `Failed to create account.\nError: ${err.name}: ${err.message}.`;
-                    status = 500;
+                    status = 403;
                 }
                 res.status(status).json({
                     success: !err,
                     error: err ? err : null,
                     message: message,
                     token: null,
-                    // auth: true, // TODO: Not sure about this yet
                 });
             } else {
                 message = "Successfully created account.";
@@ -78,7 +95,6 @@ exports.addcustomer = (req, res) => {
                         message: message,
                         token: token,
                         user: new_user,
-                        // auth: true, // TODO: Not sure about this yet
                     });
                 });
             }
@@ -107,8 +123,7 @@ exports.deletecustomerbyid = (req, res) => {
             status = 500;
             message = `Failed to remove user.\nError: ${err.name}.`;
         } else if(!customer) {
-            // TODO: if customer is null this 'fails' silently. As in, it doesn't set err. Let client know?
-            status = 400;
+            status = 403;
             message = `Failed to remove user.\nCould not find customer id.`;
         } else {
             message = "Successfully removed user.";

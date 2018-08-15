@@ -47,8 +47,12 @@ router.use('/resources', resources);
 router.use('/jobs', jobs);
 router.use('/pricing', pricing);
 
+if(process.env.API_TEST) {
+    db.open_connection(config.TEST_DB_URI, DEBUG);
+} else {
+    db.open_connection(config.DB_URI, DEBUG);
+}
 
-db.open_connection(config.DB_URI, DEBUG);
 
 // If the Node process ends, close the Mongoose connection
 process.on('SIGINT', () => {
@@ -107,3 +111,4 @@ let stop_server = (server) => {
 // Expose server to external resources
 module.exports.create = create_server;
 module.exports.close = stop_server;
+module.exports.server = app;

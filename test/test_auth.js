@@ -3,45 +3,88 @@
 let chai = require('chai');
 let chai_http = require('chai-http');
 let expect = chai.expect;
-let mongoose = require("mongoose");
+let mongoose = require('mongoose');
+
+let utils = require('./utils');
+let app = require('../app');
+let customer = require('../api/models/customer_model');
 
 chai.should();
 chai.use(chai_http);
 
-process.env.test = true;
+process.env.API_TEST = true;
 
-describe("Customer Authentication", function() {
+describe("Customer: Auth", function() {
     var server;
-    const customer_payload = {
-        firstname: "Felix",
-        lastname: "Da Housecat",
-        email: "abc@123.com",
-        password: "password",
-    };
 
-    // TODO: Need to have a separate DB for testing and hardcode this guy in there.
-    before("Add a user account to the database to interact with", function() {
-        console.log("Creating user account");
-    });
-    after("Remove the user account from the database", function() {
-        console.log("Removing user account");
-    });
+    // before("Add a user account to the database to interact with", async function() {
+    //     // console.log("Creating user account");
+    //     // try {
+    //     //     await utils.add_test_user();
+    //     // } catch(err) {
+    //     //     console.error(err);
+    //     // }
+    //     // console.log("User account created");
+    // });
+    //
+    // after("Remove the user account from the database", async function() {
+    //     console.log("Removing user account");
+    //     utils.delete_test_user().catch(err => {console.error(err)});
+    // });
 
     // And of course we need to setup/teardown our server.
-    beforeEach("Instantiate server", () => {
-        server = require('../app').server;
-        console.log("Creating clean server for test.");
+    beforeEach("Instantiate server", function() {
+        customer.remove({}, (err) => {
+            done();
+        });
+        // server = app.create();
+        // console.log("Creating clean server for test.");
     });
 
-    afterEach("Tear down server", () => {
-        require('../app').stop();
-        console.log("Removing server from test.");
+    afterEach("Tear down server", function() {
+        server.close();
+        // expect(res).to.be(0);
+        console.log("Closing server from test.");
     });
 
-    it("should allow the user to login", function(done) {
-        done();
+    describe('Auth: Login', function() {
+        it("Login: should return a token upon successful login", function(done) {
+            chai.request(server).post(`/api/v1/auth/login`).send({
+                "email": utils.CUSTOMER_PAYLOAD.email,
+                "password": utils.CUSTOMER_PAYLOAD.password,
+            }).end(function(err, res) {
+                console.log("message: ", res.body.message);
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    // noinspection BadExpressionStatementJS
+                    expect(res).to.be.json;
+
+                    ["success", "message", "error"].forEach(val => {
+                        res.body.should.have.a.property(val);
+                    });
+                    res.body.success.should.be.eql(true);
+                    res.body.auth.should.be.eql(true);
+                    done();
+                });
+        });
     });
-    it("should allow the user the logout", function(done) {
-        done();
-    });
+
+    // it("should allow the user the logout", function(done) {
+    //     done();
+    // });
 });
+
+// let server
+// before(function(done) {
+//     this.enableTimeouts(false);
+//         server = require('../app')
+//     server.initialize()
+//         .then(() => {
+//             console.info('listening on', process.env.PORT)
+//             server.listen(process.env.PORT, done)
+//         })
+//         .catch(err => {
+//             console.log(err)
+//             done(err)
+//         })
+// });

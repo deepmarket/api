@@ -47,7 +47,7 @@ exports.get_prices = (req, res) => {
                 message = "Prices retrieved successfully.";
             }
             res.status(status).json({
-                success: !!prices && prices.length,
+                success: !!prices && !!prices.length,
                 error: err ? err : null,
                 message: message,
                 prices: prices,
