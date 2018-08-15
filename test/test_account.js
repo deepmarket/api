@@ -15,7 +15,6 @@ chai.use(chai_http);
 process.env.API_TEST = true;
 
 describe("Account: Create", function() {
-    // var token = null;  // ehhhhh
     beforeEach("Instantiate server", function() {
         customer.remove({}, (err) => {
             if(err) {
@@ -40,7 +39,6 @@ describe("Account: Create", function() {
                         res.body.should.have.a.property(val);
                     });
                     res.body.success.should.be.eql(true);
-                    // token = res.body.token;
                     done();
             });
         });
@@ -50,7 +48,7 @@ describe("Account: Create", function() {
         it("Bad new user: should not return a token and 403", function(done) {
             chai.request(server)
                 .post(`/api/v1/account`)
-                .send({})  // Empty account
+                .send({})  // Create bad account
                 .end(function(err, res) {
 
                     res.should.have.status(403);
