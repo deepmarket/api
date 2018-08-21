@@ -13,13 +13,13 @@ If you would like to submit changes, please open a pull request.
 #### Required Backend Dependencies
 * MongoDB _3.0.15_
 * Nodejs _8.11.1_
+
 _-- Node Modules --_
 * ExpressJs _4.16.2_ 
 * mongoose _5.1.1_
 * jsonwebtoken _8.2.0_
 * bcrypt _3.0.0_
 * body-parser _1.18.2_
-* **Oh yea, and _ES6_**
 
 _To see a full list of current dependencies (including dev) run_ `npm list --depth=0`
 
