@@ -11,7 +11,7 @@ let expect = chai.expect;
 chai.should();
 chai.use(chai_http);
 
-process.env.test = true;
+process.env.API_TEST = true;
 
 /**
  * Tests the `api/config/config.js` file, ensuring that it

@@ -3,6 +3,9 @@
 let express = require('express');  // Express server
 let bodyParser = require('body-parser');  // HTTP body parsing middleware giving us access to `req.body`
 let morgan = require('morgan');  // Logging middleware
+let rfs = require('rotating-file-stream');
+let fs = require('fs');
+let path = require('path');
 
 const config = require('./api/config/config.js');  // Configuration details
 const db = require('./db.js');
@@ -19,11 +22,21 @@ const PORT = process.env.API_TEST ? 1234 : process.env.SERVER_PORT || 8080;
 let app = express();
 let router = express.Router();
 
-// Show extended output in debug mode
-let log_level = DEBUG ? "dev" : "tiny";
+// Extended output in debug mode; logs put in cwd
+let log_level = DEBUG ? "combined" : "dev";
+let logDirectory = path.join(__dirname, 'log');
 
-// Instantiate middleware
-app.use(morgan(log_level));
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// Create a rotating write stream
+let accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: logDirectory
+});
+
+// Setup logging
+app.use(morgan(log_level, {stream: accessLogStream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -47,8 +60,12 @@ router.use('/resources', resources);
 router.use('/jobs', jobs);
 router.use('/pricing', pricing);
 
+if(process.env.API_TEST) {
+    db.open_connection(config.TEST_DB_URI, DEBUG);
+} else {
+    db.open_connection(config.DB_URI, DEBUG);
+}
 
-db.open_connection(config.DB_URI, DEBUG);
 
 // If the Node process ends, close the Mongoose connection
 process.on('SIGINT', () => {
@@ -107,3 +124,4 @@ let stop_server = (server) => {
 // Expose server to external resources
 module.exports.create = create_server;
 module.exports.close = stop_server;
+module.exports.server = app;

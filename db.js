@@ -1,7 +1,15 @@
+/**
+ * @fileoverview This file manages a connection to the database.
+ * It is intended to have an interface that is as generic as possible
+ * so as to reduce dependency on the db itself.
+ *
+ * @requires mongoose The database ORM we're using.
+ * Note: Mongoose is reliant on mongodb as a backend.
+ */
+
 
 "use strict";
 
-const config = require('./api/config/config');
 let mongoose = require('mongoose');
 
 mongoose.set('bufferCommands', false);
@@ -12,7 +20,6 @@ let connect = async (db_name, debug=false) => {
 
     try {
         // TODO: i.e. add this to the constructor
-        // Log mongoose events
         ['open', 'disconnected'].forEach(db_event => {
             mongoose.connection.on(db_event, () => {
                 if(debug) {
@@ -22,11 +29,12 @@ let connect = async (db_name, debug=false) => {
         });
 
         await mongoose.connect(db_name);
-    } catch(err) {
-        console.error(`ERROR: ${err}`);
 
-        // Can't do much without a db connection; exit.
-        process.exit(1)
+    } catch(err) {
+
+        console.error(`ERROR: ${err}`);
+        process.exit(1)  // Can't do much without a db connection; exit.
+
     } finally {
         process.on('SIGINT', () => {
             mongoose.connection.close(() => {
