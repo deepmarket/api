@@ -3,6 +3,9 @@
 let express = require('express');  // Express server
 let bodyParser = require('body-parser');  // HTTP body parsing middleware giving us access to `req.body`
 let morgan = require('morgan');  // Logging middleware
+let rfs = require('rotating-file-stream');
+let fs = require('fs');
+let path = require('path');
 
 const config = require('./api/config/config.js');  // Configuration details
 const db = require('./db.js');
@@ -19,11 +22,21 @@ const PORT = process.env.API_TEST ? 1234 : process.env.SERVER_PORT || 8080;
 let app = express();
 let router = express.Router();
 
-// Show extended output in debug mode
+// Extended output in debug mode; logs put in cwd
 let log_level = DEBUG ? "dev" : "tiny";
+let logDirectory = path.join(__dirname, 'log');
 
-// Instantiate middleware
-app.use(morgan(log_level));
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// Create a rotating write stream
+let accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: logDirectory
+});
+
+// Setup logging
+app.use(morgan(log_level, {stream: accessLogStream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
