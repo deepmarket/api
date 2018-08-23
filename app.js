@@ -23,7 +23,7 @@ let app = express();
 let router = express.Router();
 
 // Extended output in debug mode; logs put in cwd
-let log_level = DEBUG ? "dev" : "tiny";
+let log_level = DEBUG ? "combined" : "dev";
 let logDirectory = path.join(__dirname, 'log');
 
 // ensure log directory exists
