@@ -30,17 +30,18 @@ exports.login = (req, res) => {
                 auth: false,
             });
         } else {
-            message = "Login successful";
+            message = "Login unsuccessful";
             bcrypt.compare(plaintext_password, user.password).then(auth => {
                 if(auth) {
                     token = jwt.sign({id: user._id}, config.JWT_KEY);
+                    message = "Login successful";
                 }
                 res.status(status).json({
                     success: !err,
                     error: err ? err : null,
                     message: message,
                     token: token,
-                    auth: true,
+                    auth: auth,
                 });
             }).catch(err => {
                 console.log(`Error in auth controller: ${err.name}`);
