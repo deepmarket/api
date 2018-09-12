@@ -18,9 +18,9 @@ exports.login = (req, res) => {
     customer.findOne({"email": email}, "email password", (err, user) => {
         if (err) {
             message = "Failed to log in.\nPlease verify your email/password combination.";
-            status = 400;
+            status = 403;
         } else if(!user) {
-            message = "The provided email/password combination could not be found";
+            message = "The provided email/password combination could not be found.";
             status = 401;
             res.status(status).json({
                 success: !!user,
@@ -44,9 +44,8 @@ exports.login = (req, res) => {
                     auth: auth,
                 });
             }).catch(err => {
-                console.log(`Error in auth controller: ${err.name}`);
-                message = "Failed to log in.\nPlease verify your email and password";
-                status = 401;
+                message = "Failed to log in.\nPlease verify your email and password.";
+                status = 403;
                 res.status(status).json({
                     success: !err,
                     error: err ? err : null,

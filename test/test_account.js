@@ -15,7 +15,7 @@ chai.use(chai_http);
 process.env.API_TEST = true;
 
 describe("Account: Create", function() {
-    beforeEach("Instantiate server", function() {
+    beforeEach("Remove Users", function() {
         customer.remove({}, (err) => {
             if(err) {
                 console.error(`ERROR: ${err}`);
