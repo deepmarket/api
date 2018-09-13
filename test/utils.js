@@ -21,6 +21,12 @@ const TEST_USER  = {
     lastname: "Da Housecat",
     email: "abc@123.com",
     password: "password",
+    status: "Active",
+};
+
+const TEST_USER_CREDENS = {
+    email: "abc@123.com",
+    password: "password",
 };
 
 // async function create_test_account() {
@@ -243,4 +249,5 @@ module.exports = {
     add_test_user,
     delete_test_user,
     TEST_USER,
+    TEST_USER_CREDENS
 };
