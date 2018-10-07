@@ -73,7 +73,7 @@ exports.add_resource_by_customer_id = (req, res) => {
         cores: req.body.cores,
         cpus: req.body.cpus,
         gpus: req.body.gpus,
-        status: "Online",
+        status: res.body.status,
         price: req.body.price,  // TODO: this may need to be determined server side
         owner: id,
         createdBy: id,
