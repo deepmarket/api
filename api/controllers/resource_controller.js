@@ -33,7 +33,8 @@ async function update_resources() {
             await Resources.findOneAndUpdate({ip_address: worker.host}, {status: worker.status});
         }
     } catch(err) {
-        throw new Error(`${err.code} - ${err.name}`);
+        // throw new Error(`${err.code} - ${err.name}`);
+        console.error(`${err.code} - ${err.name}`);
     }
 }
 
@@ -42,7 +43,7 @@ exports.get_resources_by_customer_id = (req, res) => {
     let status = 200;
     let id = req.user_id;
 
-    update_resources();
+    update_resources().then();
 
     Resources.find({owner: id}, (err, resources) => {
         if(err) {
