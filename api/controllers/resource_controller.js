@@ -8,33 +8,41 @@
 
 "use strict";
 
+let request = require('request');
 const Resources = require('../models/resource_model');
 
-// Deprecated as of 5/22
-// exports.getallresources = function(req, res) {
-//     let message = "";
-//     let status = 200;
-//
-//     Resources.find({}, (err, resources) => {
-//         if(err) {
-//             message = `There was an error while retrieving all of the resources.\nError: ${err.name}`;
-//             status = 500;
-//         } else {
-//             message = "Resources retrieved successfully.";
-//         }
-//         res.status(status).json({
-//             success: !!resources,
-//             error: err ? err : null,
-//             message: message,
-//             resources: resources,
-//         })
-//     });
-// };
+function get_spark_data() {
+    let spark_api_url = "http://131.252.209.102:8443/json";
+
+    return new Promise((resolve, reject) => {
+        request(spark_api_url, (err, res, body) => {
+            if(err) {
+                reject(err);
+            }
+            resolve(JSON.parse(body))
+        })
+    })
+}
+
+async function update_resources() {
+
+    try {
+        let workers = await get_spark_data();
+
+        for(let worker of workers.workers) {
+            await Resources.findOneAndUpdate({ip_address: worker.host}, {status: worker.status});
+        }
+    } catch(err) {
+        throw new Error(`${err.code} - ${err.name}`);
+    }
+}
 
 exports.get_resources_by_customer_id = (req, res) => {
     let message = "";
     let status = 200;
     let id = req.user_id;
+
+    update_resources();
 
     Resources.find({owner: id}, (err, resources) => {
         if(err) {
@@ -108,7 +116,7 @@ exports.delete_resource_by_id = (req, res) => {
 
     Resources.remove({
         owner: id,
-        _id: req.body.resource_id,
+        _id: req.params.resource_id,
     }, (err) => {
         if(err) {
             message = `There was an error while deleting the resource: ${req.body.resource_id}.\nError: ${err.name}`;
@@ -116,6 +124,12 @@ exports.delete_resource_by_id = (req, res) => {
         } else {
             message = "Resource deleted successfully";
         }
+
+        // Housekeeping
+        if(req.body.resource_id) {
+            message += "\nNOTICE: This endpoint is being deprecated. Please pass 'resource_id' as the endpoint."
+        }
+
         res.status(status).json({
             success: !err,
             error: err ? err : null,

@@ -15,25 +15,27 @@ exports.get_prices = (req, res) => {
 
     let now = new Date();
     let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    midnight.setUTCHours(0, 0, 0, 0);
 
     // Instantiate date as midnight 'yesterday' so we don't get Unix epoch
     let midnight_tomorrow = new Date(midnight.getTime());
 
     // Update time with 1 day delta
     midnight_tomorrow.setDate(midnight_tomorrow.getDate() + 1);
-
-
+ 
+    console.log(midnight, midnight_tomorrow);
+    
     Prices.find({
         // Find prices generated withing the current day's time frame
-        // created_on: {
-        //     $gte: midnight,
-        //     $lte: midnight_tomorrow
-        // },
-        // // There should never be time slots outside this range but why not
-        // time_slot: {
-        //     $gte: 0,
-        //     $lte: 3
-        // }
+         createdOn: {
+             $gte: midnight,
+             $lte: midnight_tomorrow
+         },
+        // There should never be time slots outside this range but why not
+        time_slot: {
+            $gte: 0,
+            $lte: 3
+        }
         }, (err, prices) => {
             if(err) {
                 message = `There was an error while retrieving prices.\nError: ${err.name}`;
@@ -45,7 +47,7 @@ exports.get_prices = (req, res) => {
                 message = "Prices retrieved successfully.";
             }
             res.status(status).json({
-                success: !!prices,
+                success: !!prices && !!prices.length,
                 error: err ? err : null,
                 message: message,
                 prices: prices,
@@ -85,7 +87,7 @@ exports.add_price = (req, res) => {
             success: !err,
             error: err ? err : null,
             message: message,
-            resource: new_price_field ? new_price_field : null,
+            data: new_price_field ? new_price_field : null,
         });
     });
 };

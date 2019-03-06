@@ -14,48 +14,41 @@ exports.login = (req, res) => {
     let email = req.body.email;
     let plaintext_password = req.body.password;
 
-    // let query = customer.findOne({
-    //     "email": email,
-    // });
-
-    // query.select('email password');
-    // query.exec((err, user) => {
-
     // TODO: man this is janky
-    customer.findOne({"email": req.body.email}, "email password", (err, user) => {
+    customer.findOne({"email": email}, "email password", (err, user) => {
         if (err) {
             message = "Failed to log in.\nPlease verify your email/password combination.";
-            status = 400;
+            status = 403;
         } else if(!user) {
-            message = "The provided email/password combination could not be found";
+            message = "The provided email/password combination could not be found.";
             status = 401;
             res.status(status).json({
                 success: !!user,
-                err: err ? err : null,
+                error: err ? err : null,
                 message: message,
                 token: null,
                 auth: false,
             });
         } else {
-            message = "Login successful";
+            message = "Login unsuccessful";
             bcrypt.compare(plaintext_password, user.password).then(auth => {
                 if(auth) {
                     token = jwt.sign({id: user._id}, config.JWT_KEY);
+                    message = "Login successful";
                 }
                 res.status(status).json({
                     success: !err,
-                    err: err ? err : null,
+                    error: err ? err : null,
                     message: message,
                     token: token,
-                    auth: true,
+                    auth: auth,
                 });
             }).catch(err => {
-                console.log(`Error in auth controller: ${err.name}`);
-                message = "Failed to log in.\nPlease verify your email and password";
-                status = 401;
+                message = "Failed to log in.\nPlease verify your email and password.";
+                status = 403;
                 res.status(status).json({
                     success: !err,
-                    err: err ? err : null,
+                    error: err ? err : null,
                     message: message,
                     token: null,
                     auth: false,
@@ -63,12 +56,6 @@ exports.login = (req, res) => {
             });
         }
     });
-
-    // query.exec().then(doc => {
-    //
-    // }).catch(err => {
-    //
-    // });
 };
 
 exports.logout = (req, res) => {
@@ -77,7 +64,7 @@ exports.logout = (req, res) => {
 
     res.status(status).json({
         success: true,
-        err: null,
+        error: null,
         message: message,
         token: null,
         auth: false,

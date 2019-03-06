@@ -3,45 +3,92 @@
 let chai = require('chai');
 let chai_http = require('chai-http');
 let expect = chai.expect;
-let mongoose = require("mongoose");
+
+let utils = require('./utils');
+let server = require('../app').server;
+let customer = require('../api/models/customer_model');
 
 chai.should();
 chai.use(chai_http);
 
-process.env.test = true;
+process.env.API_TEST = true;
 
-describe("Customer Authentication", function() {
-    var server;
-    const customer_payload = {
-        firstname: "Felix",
-        lastname: "Da Housecat",
-        email: "abc@123.com",
-        password: "password",
-    };
-
-    // TODO: Need to have a separate DB for testing and hardcode this guy in there.
-    before("Add a user account to the database to interact with", function() {
-        console.log("Creating user account");
-    });
-    after("Remove the user account from the database", function() {
-        console.log("Removing user account");
+describe("Customer: Auth", function() {
+    beforeEach("Remove All Users; Create New User", function() {
+        customer.remove({}, (err) => {
+            if(err) {
+                console.error(`${err}`);
+            }
+        });
     });
 
-    // And of course we need to setup/teardown our server.
-    beforeEach("Instantiate server", () => {
-        server = require('../app').server;
-        console.log("Creating clean server for test.");
+    // This is required I guess?
+    after("Remove All Users; Create New User", function() {
+        customer.remove({}, (err) => {
+            if(err) {
+                console.error(`${err}`);
+            }
+        });
     });
 
-    afterEach("Tear down server", () => {
-        require('../app').stop();
-        console.log("Removing server from test.");
+    describe('Auth: Successful Login', function() {
+        it("Login: should return a token upon successful login", function(done) {
+            chai.request(server)
+                .post(`/api/v1/account`)
+                .send(utils.TEST_USER)
+                .end(function(err) {
+
+                    chai.request(server)
+                        .post(`/api/v1/auth/login`)
+                        .send(utils.TEST_USER_CREDENS)
+                        .end(function(err, res) {
+                            console.log("message: ", res.body.message);
+
+                            res.should.have.status(200);
+                            res.body.should.be.a('object');
+
+                            // noinspection BadExpressionStatementJS
+                            expect(res).to.be.json;
+
+                            ["success", "message", "error"].forEach(val => {
+                                res.body.should.have.a.property(val);
+                            });
+                            res.body.success.should.be.eql(true);
+                            res.body.token.should.not.be.eql("");
+                            res.body.auth.should.be.eql(true);
+                            done();
+                        });
+                });
+        });
     });
 
-    it("should allow the user to login", function(done) {
-        done();
-    });
-    it("should allow the user the logout", function(done) {
-        done();
+    describe('Auth: Unuccessful Login', function() {
+        it("Login: should return a token upon successful login", function(done) {
+            chai.request(server)
+                .post(`/api/v1/account`)
+                .send(utils.TEST_USER)
+                .end(function(err) {
+
+                    chai.request(server)
+                        .post(`/api/v1/auth/login`)
+                        .send({})
+                        .end(function(err, res) {
+                            res.should.have.status(401);
+                            res.body.should.be.a('object');
+
+                            // noinspection BadExpressionStatementJS
+                            expect(res).to.be.json;
+
+                            ["success", "message", "error"].forEach(val => {
+                                res.body.should.have.a.property(val);
+                            });
+                            res.body.success.should.be.eql(false);
+                            // noinspection BadExpressionStatementJS
+                            expect(res.body.token).to.be.null;
+                            res.body.auth.should.be.eql(false);
+                            done();
+                        });
+                });
+        });
     });
 });
