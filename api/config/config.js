@@ -15,9 +15,9 @@ const config = {};
 
 // Config parameters of the database.
 config.API_ENDPOINT = "/api/v1";
-config.DB_URI = "mongodb://localhost/ShareResources";
+config.DB_URI = "mongodb://localhost/DeepShare";
 config.TEST_DB_URI = "mongodb://localhost/test";
-config.DATABASE = "SHARE_RESOURCES";
+config.DATABASE = "DEEP_SHARE";
 config.JWT_KEY = "$h!r#res0urces";  // TODO: probably use env var instead?
 config.SALT_ROUNDS = 10;
 

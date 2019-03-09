@@ -64,7 +64,11 @@ router.use('/pricing', pricing);
 if(process.env.API_TEST) {
     db.open_connection(config.TEST_DB_URI, DEBUG);
 } else {
-    db.open_connection(config.DB_URI, DEBUG);
+    if (process.env.MONGO_DATABASE_URL) {
+        db.open_connection(process.env.MONGO_DATABASE_URL, DEBUG);
+    } else {
+        db.open_connection(config.DB_URI, DEBUG);
+    }
 }
 
 

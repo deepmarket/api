@@ -1,0 +1,28 @@
+version: "2"
+services:
+  app:
+    container_name: deepshare_api
+    image: "node:8"
+    restart: always
+    working_dir: /usr/src/app/
+    environment:
+      - MONGO_DATABASE_URL="mongodb://localhost:27017/DeepShare"
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+
+    volumes:
+      - /usr/src/app:./
+#    expose:
+#      - "8080"
+    command: "npm start"
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - /data/db:/data/db
+    ports:
+      - "27017:27017"

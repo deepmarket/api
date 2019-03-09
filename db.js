@@ -17,7 +17,7 @@ mongoose.set('bufferCommands', false);
 
 // TODO: refactor so this is more OOP-esque...
 let connect = async (db_name, debug=false) => {
-
+    console.log(`NOTICE: Connecting to ${db_name}`);
     try {
         // TODO: i.e. add this to the constructor
         ['open', 'disconnected'].forEach(db_event => {

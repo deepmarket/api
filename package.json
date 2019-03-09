@@ -1,13 +1,13 @@
 {
-  "name": "shareresources_services",
-  "version": "0.1.1",
+  "name": "deepshare-api",
+  "version": "0.1.2",
   "description": "",
   "main": "app.js",
   "directories": {
     "doc": "docs"
   },
   "dependencies": {
-    "bcrypt": "^3.0.0",
+    "bcrypt": "^3.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.2.0",
@@ -24,7 +24,8 @@
     "should": "^13.2.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --exit"
+    "test": "./node_modules/.bin/mocha --exit",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
