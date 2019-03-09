@@ -6,7 +6,7 @@ services:
 #    restart: always
 
     environment:
-      - MONGO_DATABASE_URL="mongodb://mongo:27017/DeepShare"
+      - MONGO_DATABASE_URL=mongodb://mongo:27017/DeepShare
     build: .
     ports:
       - "8080:8080"
