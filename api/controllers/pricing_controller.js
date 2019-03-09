@@ -9,7 +9,52 @@
 
 const Prices = require('../models/pricing_model');
 
-exports.get_prices = (req, res) => {
+// exports.get_prices = (req, res) => {
+//     let message = "";
+//     let status = 200;
+//
+//     let now = new Date();
+//     let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+//     midnight.setUTCHours(0, 0, 0, 0);
+//
+//     // Instantiate date as midnight 'yesterday' so we don't get Unix epoch
+//     let midnight_tomorrow = new Date(midnight.getTime());
+//
+//     // Update time with 1 day delta
+//     midnight_tomorrow.setDate(midnight_tomorrow.getDate() + 1);
+//
+//     Prices.find({
+//         // Find prices generated withing the current day's time frame
+//          createdOn: {
+//              $gte: midnight,
+//              $lte: midnight_tomorrow
+//          },
+//         // There should never be time slots outside this range but why not
+//         time_slot: {
+//             $gte: 0,
+//             $lte: 3
+//         }
+//         }, (err, prices) => {
+//             if(err) {
+//                 message = `There was an error while retrieving prices.\nError: ${err.name}`;
+//                 status = 500;
+//             } else if (!prices) {
+//                 message = "Prices have not been generated yet.";
+//                 status = 301;
+//             } else {
+//                 message = "Prices retrieved successfully.";
+//             }
+//             res.status(status).json({
+//                 success: !!prices && !!prices.length,
+//                 error: err ? err : null,
+//                 message: message,
+//                 prices: prices,
+//             });
+//     });
+//
+// };
+
+exports.get_prices = async (req, res) => {
     let message = "";
     let status = 200;
 
@@ -22,38 +67,40 @@ exports.get_prices = (req, res) => {
 
     // Update time with 1 day delta
     midnight_tomorrow.setDate(midnight_tomorrow.getDate() + 1);
- 
-    console.log(midnight, midnight_tomorrow);
-    
-    Prices.find({
-        // Find prices generated withing the current day's time frame
-         createdOn: {
-             $gte: midnight,
-             $lte: midnight_tomorrow
-         },
-        // There should never be time slots outside this range but why not
-        time_slot: {
-            $gte: 0,
-            $lte: 3
-        }
-        }, (err, prices) => {
-            if(err) {
-                message = `There was an error while retrieving prices.\nError: ${err.name}`;
-                status = 500;
-            } else if (!prices) {
-                message = "Prices have not been generated yet.";
-                status = 301;
-            } else {
-                message = "Prices retrieved successfully.";
-            }
-            res.status(status).json({
-                success: !!prices && !!prices.length,
-                error: err ? err : null,
-                message: message,
-                prices: prices,
-            });
-    });
 
+    let prices;
+    try {
+        prices = await Prices.find({
+            // Find prices generated withing the current day's time frame
+            createdOn: {
+                $gte: midnight,
+                $lte: midnight_tomorrow
+            },
+            // There should never be time slots outside this range but why not
+            time_slot: {
+                $gte: 0,
+                $lte: 3
+            }
+        });
+
+        message = "Prices retrieved successfully.";
+
+    } catch (err) {
+        message = `There was an error while retrieving prices.\nError: ${err.name}`;
+        status = 500;
+
+        if (!prices) {
+            message = "Prices have not been generated yet.";
+            status = 301;
+        }
+    } finally {
+        res.status(status).json({
+            success: !!prices && !!prices.length,
+            error: err ? err : null,
+            message: message,
+            prices: prices,
+        });
+    }
 };
 
 exports.add_price = (req, res) => {
