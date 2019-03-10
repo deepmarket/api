@@ -31,7 +31,7 @@ describe("config", function() {
             let db_uri = config.DB_URI;
             expect(db_uri).to.be.a("string");
             expect(db_uri.split('/')).to.have.lengthOf(4);
-            expect(db_uri.split('/')[3], "ShareResources").to.equal('ShareResources');
+            expect(db_uri.split('/')[3], "DeepShare").to.equal('DeepShare');
             done();
         });
 
