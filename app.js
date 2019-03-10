@@ -36,8 +36,12 @@ let accessLogStream = rfs('access.log', {
 });
 
 // Setup logging
-// app.use(morgan(log_level, {stream: accessLogStream}));
-app.use(morgan(log_level));
+if (!DEBUG) {
+    app.use(morgan(log_level, {stream: accessLogStream}));
+} else {
+    app.use(morgan(log_level));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
@@ -64,7 +68,11 @@ router.use('/pricing', pricing);
 if(process.env.API_TEST) {
     db.open_connection(config.TEST_DB_URI, DEBUG);
 } else {
-    db.open_connection(config.DB_URI, DEBUG);
+    if (process.env.MONGO_DATABASE_URL) {
+        db.open_connection(process.env.MONGO_DATABASE_URL, DEBUG);
+    } else {
+        db.open_connection(config.DB_URI, DEBUG);
+    }
 }
 
 
