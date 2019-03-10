@@ -42,16 +42,16 @@ exports.add_customer = (req, res) => {
     let message = "";
     let status = 200;
 
-    if(!good_user(req.body)) {
-        status = 403;
-        res.status(status).json({
-            success: false,
-            error: "Missing body parameter.",
-            message: "Nothing important",
-            token: null,
-        });
-        return;
-    }
+    // if(!good_user(req.body)) {
+    //     status = 403;
+    //     res.status(status).json({
+    //         success: false,
+    //         error: "Missing body parameter.",
+    //         message: "Nothing important",
+    //         token: null,
+    //     });
+    //     return;
+    // }
 
     bcrypt.hash(req.body.password, config.SALT_ROUNDS, (err, hash) => {
         user = new customer({
