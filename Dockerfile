@@ -15,4 +15,3 @@ COPY . /usr/src/app
 EXPOSE 8080
 
 #ENV MONGO_DATABASE_URL "mongodb://10.0.0.64:27017/DeepShare"
-#RUN [ "npm", "start" ]
