@@ -61,12 +61,50 @@ exports.get_prices = async (req, res) => {
     }
 };
 
-exports.add_price = (req, res) => {
-    let message, price;
+// exports.add_price = (req, res) => {
+//     let message, price;
+//     let status = 200;
+//     let id = req.user_id;
+//     let errors = [];
+//
+//     // For some reason this has to be initialized earlier to work.
+//     price = new Prices({
+//         time_slot: req.body.time_slot,
+//         cpus: req.body.cpus,
+//         gpus: req.body.gpus,
+//         memory: req.body.memory,
+//         disk_space: req.body.price,
+//         created_by: id,
+//         updated_by: id,
+//     });
+//
+//     price.save((err, new_price_field) => {
+//         if(err) {
+//             if (err.code === 11000) {
+//                 message = `There was an error while adding the price field.\nError: ${err.name}`;
+//             } else {
+//                 message = "There was an error while adding the price field.";
+//             }
+//             status = 500;
+//             errors.append(err);
+//         } else {
+//             message = "Price field added successfully.";
+//         }
+//         res.status(status).json({
+//             success: !err,
+//             errors: errors,
+//             message: message,
+//             data: new_price_field ? new_price_field : null,
+//         });
+//     });
+// };
+
+exports.add_price = async (req, res) => {
+    let message, price, new_price;
     let status = 200;
     let id = req.user_id;
+    let errors = [];
 
-    // For some reason this has to be initialized earlier to work.
     price = new Prices({
         time_slot: req.body.time_slot,
         cpus: req.body.cpus,
@@ -77,30 +115,44 @@ exports.add_price = (req, res) => {
         updated_by: id,
     });
 
-    price.save((err, new_price_field) => {
-        if(err) {
-            if (err.code === 11000) {
-                message = `There was an error while adding the price field.\nError: ${err.name}`;
-            } else {
-                message = "There was an error while adding the price field.";
-            }
-            status = 500;
+    try {
+        new_price = await price.save();
+
+        message = "Price field added successfully.";
+
+    } catch (err) {
+        if (err.code === 11000) {
+            status = 409;
+            message = `There was an error while adding the price field.\nError: ${err.name}`;
         } else {
-            message = "Price field added successfully.";
+            message = "There was an error while adding the price field.";
+            status = 500;
         }
+
+        errors.append(err);
+
+    } finally {
         res.status(status).json({
             success: !err,
-            error: err ? err : null,
+            errors: errors,
             message: message,
-            data: new_price_field ? new_price_field : null,
+            data: new_price ? new_price : null,
         });
-    });
+    }
 };
 
 exports.update_price = (req, res) => {
-    res.status(501).json({
+    res.status(405).json({
         success: true,
-        error: null,
-        message: "NOT IMPLEMENTED",
+        errors: [],
+        message: "Updating prices is not supported.",
+    });
+};
+
+exports.delete_price = (req, res) => {
+    res.status(405).json({
+        success: true,
+        errors: [],
+        message: "Deleting prices is not supported.",
     });
 };
