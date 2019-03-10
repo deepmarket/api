@@ -8,37 +8,47 @@
 
 "use strict";
 
+let request = require('request');
 const Resources = require('../models/resource_model');
 
-// Deprecated as of 5/22
-// exports.getallresources = function(req, res) {
-//     let message = "";
-//     let status = 200;
-//
-//     Resources.find({}, (err, resources) => {
-//         if(err) {
-//             message = `There was an error while retrieving all of the resources.\nError: ${err.name}`;
-//             status = 500;
-//         } else {
-//             message = "Resources retrieved successfully.";
-//         }
-//         res.status(status).json({
-//             success: !!resources,
-//             error: err ? err : null,
-//             message: message,
-//             resources: resources,
-//         })
-//     });
-// };
+function get_spark_data() {
+    let spark_api_url = "http://131.252.209.102:8443/json";
+
+    return new Promise((resolve, reject) => {
+        request(spark_api_url, (err, res, body) => {
+            if(err) {
+                return reject(err);
+            }
+            return resolve(JSON.parse(body))
+        })
+    })
+}
+
+async function update_resources() {
+
+    try {
+        let workers = await get_spark_data();
+
+        for(let worker of workers.workers) {
+            await Resources.findOneAndUpdate({ip_address: worker.host}, {status: worker.status});
+        }
+    } catch(err) {
+        // TODO: Return a warning about unsuccessfully updating statuses
+        console.error(`${err.code} - ${err.message}`);
+    }
+}
 
 exports.get_resources_by_customer_id = (req, res) => {
     let message = "";
     let status = 200;
     let id = req.user_id;
 
+    // Updates status of a users resources known to spark
+    update_resources();
+
     Resources.find({owner: id}, (err, resources) => {
         if(err) {
-            message = `There was an error while retrieving all of your resources.\nError: ${err.name}`;
+            message = `There was an error while retrieving your resources.\nError: ${err.name}`;
             status = 500;
         } else {
             message = "Resources retrieved successfully.";
@@ -59,13 +69,13 @@ exports.add_resource_by_customer_id = (req, res) => {
     let id = req.user_id;
 
     // For some reason this has to be initialized earlier to work.
-        resource = new Resources({
+    resource = new Resources({
         ip_address: req.body.ip_address,
         ram: req.body.ram,
         cores: req.body.cores,
         cpus: req.body.cpus,
         gpus: req.body.gpus,
-        status: "Online",
+        status: req.body.status,
         price: req.body.price,  // TODO: this may need to be determined server side
         owner: id,
         createdBy: id,
