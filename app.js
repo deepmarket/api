@@ -36,7 +36,8 @@ let accessLogStream = rfs('access.log', {
 });
 
 // Setup logging
-app.use(morgan(log_level, {stream: accessLogStream}));
+// app.use(morgan(log_level, {stream: accessLogStream}));
+app.use(morgan(log_level));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
