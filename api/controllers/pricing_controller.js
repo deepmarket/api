@@ -49,7 +49,7 @@ exports.get_prices = async (req, res) => {
     } catch (err) {
         message = `There was an error while retrieving prices.\nError: ${err.name}`;
         status = 500;
-        errors.append(err);
+        errors.push(err);
 
     } finally {
         res.status(status).json({
@@ -61,48 +61,9 @@ exports.get_prices = async (req, res) => {
     }
 };
 
-// exports.add_price = (req, res) => {
-//     let message, price;
-//     let status = 200;
-//     let id = req.user_id;
-//     let errors = [];
-//
-//     // For some reason this has to be initialized earlier to work.
-//     price = new Prices({
-//         time_slot: req.body.time_slot,
-//         cpus: req.body.cpus,
-//         gpus: req.body.gpus,
-//         memory: req.body.memory,
-//         disk_space: req.body.price,
-//         created_by: id,
-//         updated_by: id,
-//     });
-//
-//     price.save((err, new_price_field) => {
-//         if(err) {
-//             if (err.code === 11000) {
-//                 message = `There was an error while adding the price field.\nError: ${err.name}`;
-//             } else {
-//                 message = "There was an error while adding the price field.";
-//             }
-//             status = 500;
-//             errors.append(err);
-//         } else {
-//             message = "Price field added successfully.";
-//         }
-//         res.status(status).json({
-//             success: !err,
-//             errors: errors,
-//             message: message,
-//             data: new_price_field ? new_price_field : null,
-//         });
-//     });
-// };
-
 exports.add_price = async (req, res) => {
     let message, price, new_price;
     let status = 200;
-    let id = req.user_id;
     let errors = [];
 
     price = new Prices({
@@ -110,9 +71,7 @@ exports.add_price = async (req, res) => {
         cpus: req.body.cpus,
         gpus: req.body.gpus,
         memory: req.body.memory,
-        disk_space: req.body.price,
-        created_by: id,
-        updated_by: id,
+        disk_space: req.body.disk_space
     });
 
     try {
@@ -129,11 +88,11 @@ exports.add_price = async (req, res) => {
             status = 500;
         }
 
-        errors.append(err);
+        errors.push(err);
 
     } finally {
         res.status(status).json({
-            success: !err,
+            success: !!new_price,
             errors: errors,
             message: message,
             data: new_price ? new_price : null,
