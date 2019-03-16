@@ -61,6 +61,11 @@ let jobSchema = new Schema({
         type: Number,
         required: true,
     },
+    expected_time: {
+        type: String,
+        default: "",
+        required: false,
+    },
     created_on: {
         type: Date,
         default: Date.now,

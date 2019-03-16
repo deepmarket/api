@@ -24,5 +24,10 @@
 # dependency files
 !package.json
 
+# Allow docker configuration files
+!Dockerfile
+!docker-compose.yml
+!.dockerignore
+
 
 
