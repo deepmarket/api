@@ -16,7 +16,7 @@ exports.get_prices = async (req, res) => {
 
     let now = new Date();
     let midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    midnight.setUTCHours(0, 0, 0, 0);
+    // midnight.setUTCHours(0, 0, 0, 0);
 
     // Instantiate date as midnight 'yesterday' so we don't get Unix epoch
     let midnight_tomorrow = new Date(midnight.getTime());
@@ -28,7 +28,7 @@ exports.get_prices = async (req, res) => {
     try {
         prices = await Prices.find({
             // Find prices generated within the current day's time frame
-            createdOn: {
+            created_on: {
                 $gte: midnight,
                 $lte: midnight_tomorrow
             },
@@ -39,7 +39,7 @@ exports.get_prices = async (req, res) => {
             }
         });
 
-        if (!prices) {
+        if (prices.length === 0) {
             message = "Prices have not been generated yet.";
             status = 500;
         } else {
@@ -56,7 +56,7 @@ exports.get_prices = async (req, res) => {
             success: !!prices && !!prices.length,
             errors: errors,
             message: message,
-            prices: prices,
+            data: prices,
         });
     }
 };
@@ -113,5 +113,6 @@ exports.delete_price = (req, res) => {
         success: true,
         errors: [],
         message: "Deleting prices is not supported.",
+        data: null,
     });
 };
