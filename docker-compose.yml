@@ -1,17 +1,29 @@
 version: "3"
 services:
+
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./conf/nginx:/etc/nginx/conf.d
+
+  certbot:
+      image: certbot/certbot
+
   app:
     container_name: deepshare_api
     image: "node:8"
-#    restart: always
+    restart: always
 
     environment:
       - MONGO_DATABASE_URL=mongodb://mongo:27017/DeepShare
+
     build: .
+
     ports:
       - "8080:8080"
-#    links:
-#      - mongo
 
     working_dir: /usr/src/app/
 
@@ -21,14 +33,15 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-#    expose:
-#      - "8080"
+
     command: "npm start"
 
   mongo:
     container_name: mongo
     image: mongo
+
 #    volumes:
 #      - /data/db:/data/db
+
     ports:
       - "27017:27017"
