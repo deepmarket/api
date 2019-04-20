@@ -12,7 +12,7 @@ let request = require('request');
 const Resources = require('../models/resource_model');
 
 function get_spark_data() {
-    let spark_api_url = "http://131.252.209.102:8443/json";
+    let spark_api_url = "http://pacific.cs.pdx.edu:8443/json";
 
     return new Promise((resolve, reject) => {
         request(spark_api_url, (err, res, body) => {
