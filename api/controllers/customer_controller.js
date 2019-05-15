@@ -1,9 +1,9 @@
 "use strict";
 
 const config = require('../config/config');
-let jwt = require('jsonwebtoken');
-let bcrypt = require('bcrypt');
-let customer = require('../models/customer_model');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const Account = require('../models/customer_model');
 
 function good_user(user_request) {
     return user_request.hasOwnProperty("firstname") &&
@@ -16,7 +16,7 @@ exports.get_account_by_id = (req, res) => {
     let message;
     let status = 200;
 
-    customer.findById(req.user_id, (err, account) => {
+    Account.findById(req.user_id, (err, account) => {
         if (err) {
             message = `Failed to get customer information.\nError: ${err.name}: ${err.message}`;
             status = 500;
@@ -36,14 +36,13 @@ exports.get_account_by_id = (req, res) => {
     });
 };
 
-// Create a new customer account
 exports.add_account = (req, res) => {
     let user;
     let message = "";
     let status = 200;
 
     bcrypt.hash(req.body.password, config.SALT_ROUNDS, (err, hash) => {
-        user = new customer({
+        user = new Account({
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
@@ -108,7 +107,7 @@ exports.update_account_by_id = (req, res) => {
         req.body.update.password = bcrypt.hashSync(req.body.update.password, config.SALT_ROUNDS);
     }
 
-    customer.findOneAndUpdate({_id: req.user_id},
+    Account.findOneAndUpdate({_id: req.user_id},
         // Unpack `update` and ensure we update the `updatedOn` field.
         {
             ...req.body.update,
@@ -141,7 +140,7 @@ exports.delete_account_by_id = (req, res) => {
     let status = 200;
     let message = "";
 
-    customer.findOneAndDelete({_id: req.user_id}, (err, account) => {
+    Account.findOneAndDelete({_id: req.user_id}, (err, account) => {
         if(err) {
             status = 500;
             message = `Failed to remove user.\nError: ${err.name}.`;
