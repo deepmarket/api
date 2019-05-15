@@ -12,46 +12,35 @@ function good_user(user_request) {
         user_request.hasOwnProperty("password");
 }
 
-exports.get_customer_by_id = (req, res) => {
+exports.get_account_by_id = (req, res) => {
     let message;
     let status = 200;
 
-    customer.findById(req.user_id, (err, customer) => {
+    customer.findById(req.user_id, (err, account) => {
         if (err) {
             message = `Failed to get customer information.\nError: ${err.name}: ${err.message}`;
             status = 500;
-        } else if (!customer) {
+        } else if (!account) {
             status = 400;
             message = `Failed to get customer information.\nThe user with id '${req.user_id}' could not be found.`;
         } else {
-           message = "Successfully fetched customer information.";
+           message = "Successfully fetched account information.";
         }
 
         res.status(status).json({
-            success: !!customer,  // `!!` is shorthanded boolean conversion
-            error: err ? err : null,
+            success: !!account,  // `!!` is shorthanded boolean conversion
+            error: err || null,
             message: message,
-            customer: customer,
+            account: account,
         })
     });
 };
 
-/* Add a new customer to the collection */
-exports.add_customer = (req, res) => {
+// Create a new customer account
+exports.add_account = (req, res) => {
     let user;
     let message = "";
     let status = 200;
-
-    // if(!good_user(req.body)) {
-    //     status = 403;
-    //     res.status(status).json({
-    //         success: false,
-    //         error: "Missing body parameter.",
-    //         message: "Nothing important",
-    //         token: null,
-    //     });
-    //     return;
-    // }
 
     bcrypt.hash(req.body.password, config.SALT_ROUNDS, (err, hash) => {
         user = new customer({
@@ -66,16 +55,17 @@ exports.add_customer = (req, res) => {
             if (err) {
                 if (err.code === 11000) {
                     message = `Failed to create account.\nThe email '${req.body.email}' is already in use.`;
-                    status = 403;
+                    status = 409;
                 } else {
-                    message = `Failed to create account.\nError: ${err.name}: ${err.message}.`;
-                    status = 403;
+                    message = `Failed to create account.`;
+                    status = 400;
                 }
                 res.status(status).json({
                     success: !err,
-                    error: err ? err : null,
+                    error: err || null,
                     message: message,
                     token: null,
+                    account: null,
                 });
             } else {
                 message = "Successfully created account.";
@@ -86,7 +76,7 @@ exports.add_customer = (req, res) => {
                 };
                 jwt.sign(jwt_payload, config.JWT_KEY, {expiresIn: '24h'}, (err, token) => {
                     if (err) {
-                        status = 400;
+                        status = 500;
                         message = "Failed to create authentication token."
                     }
                     res.status(status).json({
@@ -94,7 +84,7 @@ exports.add_customer = (req, res) => {
                         error: err ? err : null,
                         message: message,
                         token: token,
-                        user: new_user,
+                        account: new_user,
                     });
                 });
             }
@@ -102,27 +92,63 @@ exports.add_customer = (req, res) => {
     });
 };
 
-exports.updateprofilebyid = (req, res) => {
-    let status = 501;
-    let message = "NOT IMPLEMENTED";
+exports.update_account_by_id = (req, res) => {
+    let status = 200;
+    let message = "";
 
-    res.status(status).json({
-        success: false,
-        error: null,
-        message: message,
+    try {
+        req.body.update = JSON.parse(req.body.update);
+    } catch (e) {
+        // Assume this is valid json; if not mongoose will throw an error and we'll return it below
+    }
+
+    if(req.body.update.hasOwnProperty("password")) {
+        res.status(403).json({
+            success: false,
+            error: Error("Cannot update password."),
+            message: "Updating your password is not supported at this time.",
+            account: null,
+        });
+
+        // Stop processing request
+        return;
+    }
+
+    customer.findOneAndUpdate({_id: req.user_id},
+        // `update` should be a json encoded object with the fields to update
+        req.body.update,
+        // Return the updated document
+        {
+            new: true,
+            runValidators: true,
+        },
+        (err, doc) => {
+
+        if(err) {
+            status = 500;
+            message = `There was an error updating your account.`;
+        } else {
+            message = "Your account was successfully updated.";
+        }
+
+        res.status(status).json({
+            success: !err,
+            error: err || null,
+            message: message,
+            account: doc,
+        });
     });
 };
 
-// TODO: rename this
-exports.deletecustomerbyid = (req, res) => {
-    let message = "";
+exports.delete_account_by_id = (req, res) => {
     let status = 200;
+    let message = "";
 
-    customer.findOneAndDelete({_id: req.user_id}, (err, customer) => {
+    customer.findOneAndDelete({_id: req.user_id}, (err, account) => {
         if(err) {
             status = 500;
             message = `Failed to remove user.\nError: ${err.name}.`;
-        } else if(!customer) {
+        } else if(!account) {
             status = 403;
             message = `Failed to remove user.\nCould not find customer id.`;
         } else {
@@ -130,9 +156,10 @@ exports.deletecustomerbyid = (req, res) => {
         }
 
         res.status(status).json({
-            success: !!customer,
-            error: err ? err : null,
+            success: !!account,
+            error: err || null,
             message: message,
+            account: account,
         });
     });
 };

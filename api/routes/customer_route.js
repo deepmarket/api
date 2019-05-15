@@ -13,16 +13,16 @@ const verifyToken = require(`${config.CONTROLLERS_PATH}/verifyToken`);
 let customer_controller = require(`${config.CONTROLLERS_PATH}/customer_controller`);
 
 
-/* GET ALL RESOURCES */
-router.get('/', verifyToken, customer_controller.get_customer_by_id);
+// Get a users account information
+router.get('/', verifyToken, customer_controller.get_account_by_id);
 
-// Create a new customer
-router.post('/', customer_controller.add_customer);
+// Create a new account
+router.post('/', customer_controller.add_account);
 
-// Update a customer's details
-router.put('/', verifyToken, customer_controller.updateprofilebyid);
+// Update a user's account details
+router.put('/', verifyToken, customer_controller.update_account_by_id);
 
-// Delete a customer's account
-router.delete('/', verifyToken, customer_controller.deletecustomerbyid);
+// Delete a user's account
+router.delete('/', verifyToken, customer_controller.delete_account_by_id);
 
 module.exports = router;
