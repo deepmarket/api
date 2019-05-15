@@ -104,15 +104,8 @@ exports.update_account_by_id = (req, res) => {
     }
 
     if(req.body.update.hasOwnProperty("password")) {
-        res.status(403).json({
-            success: false,
-            error: Error("Cannot update password."),
-            message: "Updating your password is not supported at this time.",
-            account: null,
-        });
-
-        // Stop processing request
-        return;
+        // TODO: Run hash function in sync so we don't have to deal with callback hell below
+        req.body.update.password = bcrypt.hashSync(req.body.update.password, config.SALT_ROUNDS);
     }
 
     customer.findOneAndUpdate({_id: req.user_id},
@@ -121,7 +114,7 @@ exports.update_account_by_id = (req, res) => {
             ...req.body.update,
             updatedOn: Date.now()
         },
-        // Return the updated document
+        // Return the updated document with `new`
         {
             new: true,
             runValidators: true,
