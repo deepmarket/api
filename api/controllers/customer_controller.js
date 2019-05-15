@@ -97,6 +97,7 @@ exports.update_account_by_id = (req, res) => {
     let message = "";
 
     try {
+        // `req.body.update` should be a json encoded object with the fields to update
         req.body.update = JSON.parse(req.body.update);
     } catch (e) {
         // Assume this is valid json; if not mongoose will throw an error and we'll return it below
@@ -115,8 +116,11 @@ exports.update_account_by_id = (req, res) => {
     }
 
     customer.findOneAndUpdate({_id: req.user_id},
-        // `update` should be a json encoded object with the fields to update
-        req.body.update,
+        // Unpack `update` and ensure we update the `updatedOn` field.
+        {
+            ...req.body.update,
+            updatedOn: Date.now()
+        },
         // Return the updated document
         {
             new: true,
