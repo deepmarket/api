@@ -51,7 +51,7 @@ describe("Account: Create", function() {
                 .send({})  // Create bad account
                 .end(function(err, res) {
 
-                    res.should.have.status(403);
+                    res.should.have.status(400);
                     res.body.should.be.a('object');
 
                     // noinspection BadExpressionStatementJS
