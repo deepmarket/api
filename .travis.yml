@@ -7,6 +7,9 @@ node_js:
 services:
   - mongodb
 
+before_install:
+  - "ls -Ralph"
+
 # TODO: remove old cache somehow?
 #cache:
 #  directories:
