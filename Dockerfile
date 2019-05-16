@@ -2,16 +2,19 @@
 
 FROM node:8
 
-RUN mkdir -p /usr/src/app/
+RUN mkdir -p /api
 
-WORKDIR /usr/src/app/
+ENV MONGO_DATABASE_URL "mongodb://mongo:27017/DeepShare"
 
-COPY package.json /usr/src/app/
+WORKDIR /api
+
+COPY package.json /api
 
 RUN npm install
 
-COPY . /usr/src/app
+COPY . /api
 
 EXPOSE 8080
 
+CMD ["npm", "start"]
 #ENV MONGO_DATABASE_URL "mongodb://10.0.0.64:27017/DeepShare"
