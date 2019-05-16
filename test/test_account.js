@@ -7,7 +7,7 @@ let expect = chai.expect;
 
 let utils = require('./utils');
 let server = require('../app').server;
-let customer = require('../api/models/customer_model');
+let customer = require('../api/models/account_model');
 
 chai.should();
 chai.use(chai_http);

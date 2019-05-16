@@ -9,7 +9,7 @@ const expect = chai.expect;
 
 const config = require('../api/config/config');
 const db = require('../db');
-const Customer = require(`../api/models/customer_model`);
+const Customer = require(`./api/models/account_model`);
 
 chai.should();
 chai.use(chai_http);
