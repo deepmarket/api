@@ -12,7 +12,7 @@ const config = require('../config/config');
 let jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-    let token = req.headers['x-access-token'];
+    let token = req.headers['X-access-token'];
     if(!token) {
         return res.status(401).json({
             success: false,
@@ -25,7 +25,7 @@ function verifyToken(req, res, next) {
         if(err) {
             return res.status(400).json({
                 success: false,
-                error: err ? err : null,
+                error: err || null,
                 message: 'Failed to authenticate with provided token.',
             });
         }

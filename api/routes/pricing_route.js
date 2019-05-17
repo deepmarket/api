@@ -10,8 +10,13 @@ let price_controller = require(`${config.CONTROLLERS_PATH}/pricing_controller`);
 
 router.get('/', price_controller.get_prices);
 
-// router.post('/', verifyToken, price_controller.add_price);
+router.post('/', price_controller.add_price);
+router.post('/', verifyToken, price_controller.add_price);
 
-// router.put('/price_id', verifyToken, price_controller);
+router.put('/', price_controller.update_price);
+router.put('/', verifyToken, price_controller.update_price);
+
+router.delete('/', price_controller.delete_price);
+router.delete('/', verifyToken, price_controller.delete_price);
 
 module.exports = router;
