@@ -56,7 +56,7 @@ exports.get_prices = async (req, res) => {
             success: !!prices && !!prices.length,
             errors: errors,
             message: message,
-            data: prices,
+            data: prices || null,
         });
     }
 };
@@ -95,7 +95,7 @@ exports.add_price = async (req, res) => {
             success: !!new_price,
             errors: errors,
             message: message,
-            data: new_price ? new_price : null,
+            data: new_price || null,
         });
     }
 };
@@ -105,6 +105,7 @@ exports.update_price = (req, res) => {
         success: true,
         errors: [],
         message: "Updating prices is not supported.",
+        data: null,
     });
 };
 
