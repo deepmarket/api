@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "dependencies": {
-    "bcrypt": "3.0.4",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.2.0",
