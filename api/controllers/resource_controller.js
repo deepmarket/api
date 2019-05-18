@@ -20,8 +20,8 @@ function get_spark_data() {
                 return reject(err);
             }
             return resolve(JSON.parse(body))
-        })
-    })
+        });
+    });
 }
 
 async function update_resources() {
@@ -38,104 +38,158 @@ async function update_resources() {
     }
 }
 
-exports.get_resources_by_customer_id = (req, res) => {
+exports.get_resources_by_customer_id = async (req, res) => {
     let message = "";
     let status = 200;
     let id = req.user_id;
+    let errors = [];
 
     // Updates status of a users resources known to spark
-    update_resources();
+    await update_resources();
 
-    Resources.find({owner: id}, (err, resources) => {
-        if(err) {
-            message = `There was an error while retrieving your resources.\nError: ${err.name}`;
-            status = 500;
-        } else {
-            message = "Resources retrieved successfully.";
-        }
+    let resources = null;
+    try {
+        resources = await Resources.find({owner: id});
+
+        message = "Successfully retrieved your resources.";
+
+    } catch (err) {
+        message = `There was an error while retrieving your resources.`;
+        status = 500;
+        errors.push(err);
+    } finally {
         res.status(status).json({
             success: !!resources,
-            error: err ? err : null,
+            errors: errors,
             message: message,
             resources: resources,
         });
-    });
-
+    }
 };
 
-exports.add_resource_by_customer_id = (req, res) => {
+exports.add_resource_by_customer_id = async (req, res) => {
     let message, resource;
     let status = 200;
     let id = req.user_id;
+    let errors = [];
 
-    // For some reason this has to be initialized earlier to work.
-    resource = new Resources({
-        ip_address: req.body.ip_address,
-        ram: req.body.ram,
-        cores: req.body.cores,
-        cpus: req.body.cpus,
-        gpus: req.body.gpus,
-        status: req.body.status,
-        price: req.body.price,  // TODO: this may need to be determined server side
-        owner: id,
-        createdBy: id,
-        updatedBy: id,
-        machine_name: req.body.machine_name
-    });
+    let new_resource = null;
 
-    resource.save((err, new_resource) => {
-        if(err) {
-            if (err.code === 11000) {
-                message = `There was an error while adding the resource.\nError: ${err.name}`;
-            } else {
-                message = "There was an error while adding the resource.";
-            }
-            status = 500;
+    try {
+        // TODO: Move new resource creation to its own try/catch block
+        // For some reason this has to be initialized earlier to work.
+        resource = await new Resources({
+            ip_address: req.body.ip_address,
+            ram: req.body.ram,
+            cores: req.body.cores,
+            cpus: req.body.cpus,
+            gpus: req.body.gpus,
+            status: req.body.status,
+            price: req.body.price,  // TODO: this may need to be determined server side
+            owner: id,
+            createdBy: id,
+            updatedBy: id,
+            machine_name: req.body.machine_name
+        });
+
+        new_resource = await resource.save();
+
+        message = `${req.body.machine_name} was successfully as a resource.`;
+    } catch(err) {
+        if (err.code === 11000) {
+            message = `A resource at '${req.body.ip_address}' has already been added.`;
         } else {
-            message = "Resource added successfully.";
+            message = `There was an unknown error while adding ${req.body.machine_name} as a resource.`;
         }
+        errors.push(err);
+        status = 500;
+    } finally {
         res.status(status).json({
-            success: !err,
-            error: err ? err : null,
+            success: !errors.length,
+            errors: errors,
             message: message,
             resource: new_resource ? new_resource : null,
         });
-    });
+    }
 };
 
-exports.update_resource_by_customer_id = (req, res) => {
-    res.status(501).json({
-        success: true,
-        error: null,
-        message: "NOT IMPLEMENTED",
-    });
-};
+// exports.update_resource_by_customer_id = (req, res) => {
+//     res.status(501).json({
+//         success: true,
+//         errors: [],
+//         message: "NOT IMPLEMENTED",
+//     });
+// };
 
-exports.delete_resource_by_id = (req, res) => {
-    let message;
+exports.update_resource_by_customer_id = async (req, res) => {
     let status = 200;
-    let id = req.user_id;
+    let message = "";
+    let updated_resource = null;
 
-    Resources.remove({
-        owner: id,
-        _id: req.params.resource_id,
-    }, (err) => {
-        if(err) {
-            message = `There was an error while deleting the resource: ${req.body.resource_id}.\nError: ${err.name}`;
-            status = 500;
-        } else {
-            message = "Resource deleted successfully";
-        }
+    try {
+        // `req.body.update` should be a json encoded object with the fields to update
+        req.body.update = JSON.parse(req.body.update);
+    } catch (e) {
+        // Assume this is valid json; if not mongoose will throw an error and we'll return it below
+    }
+    
+    try {
+        updated_resource = await Resources.findOneAndUpdate({_id: req.user_id},
+            // Unpack `update` and ensure we update the `updatedOn` field.
+            {
+                ...req.body.update,
+                updatedOn: Date.now()
+            },
+            // Return the updated document with `new`
+            {
+                new: true,
+                runValidators: true,
+            });
+            message = "Your account was successfully updated.";
 
-        // Housekeeping
-        if(req.body.resource_id) {
-            message += "\nNOTICE: This endpoint is being deprecated. Please pass 'resource_id' as the endpoint."
-        }
-
+    } catch (err) {
+        status = 500;
+        message = `There was an error updating your account.`;
+    } finally {
         res.status(status).json({
             success: !err,
-            error: err ? err : null,
+            error: err || null,
             message: message,
-        })
-    });
+            data: updated_resource,
+        });
+    }
+
+};
+
+exports.delete_resource_by_id = async (req, res) => {
+    let message;
+    let status = 200;
+    let errors = [];
+
+    let deleted_resource = null;
+
+    try {
+
+        deleted_resource = await Resources.remove({
+            owner: req.user_id,
+            _id: req.body.resource_id,
+        });
+
+        message = `${req.body.machine_name} was successfully deleted from your resources.`;
+
+    } catch(err) {
+
+        message = `There was an unknown error while deleting this resource.`;
+        status = 500;
+        errors.push(err);
+
+    } finally {
+
+        res.status(status).json({
+            // Mongo returns number deleted as `n`
+            success: (deleted_resource.n > 0),
+            errors: errors,
+            message: message,
+        });
+    }
 };
