@@ -67,7 +67,7 @@ exports.get_resources_by_customer_id = async (req, res) => {
             success: !!resources && !Boolean(errors.length),
             errors: errors,
             message: message,
-            resources: resources,
+            data: resources,
         });
     }
 };
@@ -113,7 +113,7 @@ exports.add_resource_by_customer_id = async (req, res) => {
             success: !errors.length,
             errors: errors,
             message: message,
-            resource: new_resource ? new_resource : null,
+            data: new_resource || null,
         });
     }
 };
@@ -191,6 +191,7 @@ exports.delete_resource_by_id = async (req, res) => {
             success: (deleted_resource.n > 0),
             errors: errors,
             message: message,
+            data: deleted_resource,
         });
     }
 };
