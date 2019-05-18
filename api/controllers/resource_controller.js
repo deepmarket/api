@@ -113,14 +113,6 @@ exports.add_resource_by_customer_id = async (req, res) => {
     }
 };
 
-// exports.update_resource_by_customer_id = (req, res) => {
-//     res.status(501).json({
-//         success: true,
-//         errors: [],
-//         message: "NOT IMPLEMENTED",
-//     });
-// };
-
 exports.update_resource_by_customer_id = async (req, res) => {
     let status = 200;
     let message = "";
@@ -167,12 +159,13 @@ exports.delete_resource_by_id = async (req, res) => {
     let errors = [];
 
     let deleted_resource = null;
-
+    // One of these methods should be deprecated; not sure which one though
+    let resource_id = req.body.resource_id || req.params.resource_id;
     try {
 
         deleted_resource = await Resources.remove({
             owner: req.user_id,
-            _id: req.body.resource_id,
+            _id: resource_id,
         });
 
         message = `${req.body.machine_name} was successfully deleted from your resources.`;

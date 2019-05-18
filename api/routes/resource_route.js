@@ -21,7 +21,7 @@ router.post('/', verifyToken, resources_controller.add_resource_by_customer_id);
 
 router.put('/', verifyToken, resources_controller.update_resource_by_customer_id);
 
-// router.delete('/', verifyToken, resources_controller.delete_resource_by_id);
+router.delete('/', verifyToken, resources_controller.delete_resource_by_id);
 router.delete('/:resource_id', verifyToken, resources_controller.delete_resource_by_id);
 
 module.exports = router;
