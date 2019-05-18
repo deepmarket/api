@@ -12,7 +12,8 @@ let request = require('request');
 const Resources = require('../models/resource_model');
 
 function get_spark_data() {
-    let spark_api_url = "http://pacific.cs.pdx.edu:8443/json";
+    // TODO: Define host dynamically
+    let spark_api_url = "http://atlantic.cs.pdx.edu:8443/json";
 
     return new Promise((resolve, reject) => {
         request(spark_api_url, (err, res, body) => {
@@ -25,17 +26,20 @@ function get_spark_data() {
 }
 
 async function update_resources() {
-
+    let updated_resources = null;
+    let errors = [];
     try {
         let workers = await get_spark_data();
 
         for(let worker of workers.workers) {
-            await Resources.findOneAndUpdate({ip_address: worker.host}, {status: worker.status});
+            updated_resources = await Resources.findOneAndUpdate({ip_address: worker.host}, {status: worker.status});
         }
     } catch(err) {
         // TODO: Return a warning about unsuccessfully updating statuses
         console.error(`${err.code} - ${err.message}`);
+        errors.push(err)
     }
+    return updated_resources || errors;
 }
 
 exports.get_resources_by_customer_id = async (req, res) => {
@@ -59,7 +63,8 @@ exports.get_resources_by_customer_id = async (req, res) => {
         errors.push(err);
     } finally {
         res.status(status).json({
-            success: !!resources,
+            // If we have a new resource and there were no errors this was successful
+            success: !!resources && !Boolean(errors.length),
             errors: errors,
             message: message,
             resources: resources,
@@ -116,6 +121,7 @@ exports.add_resource_by_customer_id = async (req, res) => {
 exports.update_resource_by_customer_id = async (req, res) => {
     let status = 200;
     let message = "";
+    let errors = [];
     let updated_resource = null;
 
     try {
@@ -142,10 +148,12 @@ exports.update_resource_by_customer_id = async (req, res) => {
     } catch (err) {
         status = 500;
         message = `There was an error updating your account.`;
+        errors.push(err)
     } finally {
         res.status(status).json({
-            success: !err,
-            error: err || null,
+            // If there were no errors lets say this was successful
+            success: Boolean(errors.length),
+            errors: errors,
             message: message,
             data: updated_resource,
         });
