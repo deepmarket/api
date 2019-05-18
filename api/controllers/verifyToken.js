@@ -12,7 +12,7 @@ const config = require('../config/config');
 let jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-    let token = req.headers['X-access-token'];
+    let token = req.headers['x-access-token'];
     if(!token) {
         return res.status(401).json({
             success: false,
