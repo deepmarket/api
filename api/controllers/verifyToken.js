@@ -25,7 +25,7 @@ function verifyToken(req, res, next) {
         if(err) {
             return res.status(400).json({
                 success: false,
-                error: err ? err : null,
+                error: err || null,
                 message: 'Failed to authenticate with provided token.',
             });
         }

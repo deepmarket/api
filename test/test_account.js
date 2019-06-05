@@ -1,18 +1,18 @@
 
 "use strict";
 
+process.env.API_TEST = true;
+
 let chai = require('chai');
 let chai_http = require('chai-http');
 let expect = chai.expect;
 
 let utils = require('./utils');
 let server = require('../app').server;
-let customer = require('../api/models/customer_model');
+let customer = require('../api/models/account_model');
 
 chai.should();
 chai.use(chai_http);
-
-process.env.API_TEST = true;
 
 describe("Account: Create", function() {
     beforeEach("Remove Users", function() {
@@ -51,7 +51,7 @@ describe("Account: Create", function() {
                 .send({})  // Create bad account
                 .end(function(err, res) {
 
-                    res.should.have.status(403);
+                    res.should.have.status(400);
                     res.body.should.be.a('object');
 
                     // noinspection BadExpressionStatementJS
@@ -77,7 +77,7 @@ describe("Account: Create", function() {
 
                     chai.request(server)
                         .get(`/api/v1/account`)
-                        .set({"x-access-token": token})
+                        .set({"X-access-token": token})
                         .end(function(err, res) {
                             res.should.have.status(200);
                             res.body.should.be.a('object');

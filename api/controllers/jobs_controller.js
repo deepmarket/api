@@ -8,7 +8,7 @@
 "use strict";
 
 const config = require('../config/config');
-const customer = require("../models/customer_model");
+const customer = require("../models/account_model");
 const jobs = require('../models/job_model');
 
 exports.get_all_jobs = (req, res) => {

@@ -9,7 +9,7 @@ const expect = chai.expect;
 
 const config = require('../api/config/config');
 const db = require('../db');
-const Customer = require(`../api/models/customer_model`);
+const Account = require(`../api/models/account_model`);
 
 chai.should();
 chai.use(chai_http);
@@ -82,7 +82,7 @@ const TEST_USER_CREDENS = {
 //                 reject(err);
 //             }
 //
-//             user = new Customer({
+//             user = new Account({
 //                 firstname: TEST_USER.firstname,
 //                 lastname: TEST_USER.lastname,
 //                 email: TEST_USER.email,
@@ -123,7 +123,7 @@ async function add_test_user() {
         console.log("before hash");
         let hash = await bcrypt.hash(TEST_USER.password, config.SALT_ROUNDS);
 
-        user = new Customer({
+        user = new Account({
             firstname: TEST_USER.firstname,
             lastname: TEST_USER.lastname,
             email: TEST_USER.email,
@@ -152,7 +152,7 @@ async function delete_test_user() {
     db.open_connection(config.TEST_DB_URI, process.env.API_TEST);
 
     try {
-        let customer = await Customer.findOneAndDelete({_id: TEST_USER.user_id});
+        let customer = await Account.findOneAndDelete({_id: TEST_USER.user_id});
         console.log(`NOTICE: Deleted ${customer}`);
     } catch(err) {
         console.error(`ERROR: ${err}`);
@@ -179,7 +179,7 @@ async function delete_test_user() {
 
 // async function delete_test_account() {
 //     return new Promise((resolve, reject) => {
-//         Customer.findOneAndDelete({_id: TEST_USER.user_id}, err => {
+//         Account.findOneAndDelete({_id: TEST_USER.user_id}, err => {
 //             if(err) {
 //                 // Meh...
 //                 reject(err);
@@ -195,7 +195,7 @@ async function delete_test_user() {
 //     let server = await app.create();
 //
 //     try {
-//         await Customer.findOneAndDelete({_id: TEST_USER.user_id});
+//         await Account.findOneAndDelete({_id: TEST_USER.user_id});
 //     } catch(err) {
 //         console.error(err);
 //     }

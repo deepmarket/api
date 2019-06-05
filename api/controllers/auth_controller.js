@@ -4,7 +4,7 @@ const config = require('../config/config');
 
 let jwt = require('jsonwebtoken');
 let bcrypt = require('bcrypt');
-let customer = require('../models/customer_model');
+let customer = require('../models/account_model');
 
 // Authenticate user; return token
 exports.login = (req, res) => {

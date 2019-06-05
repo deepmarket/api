@@ -1,7 +1,7 @@
 /**
  * @fileoverview This file contains the definition of the customer schema.
  * It is dependent on mongoose.
- * @exports {customerSchema} The customer schema definition.
+ * @exports {AccountSchema} The customer schema definition.
  */
 
 
@@ -10,7 +10,7 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-let customerSchema = new Schema({
+let AccountSchema = new Schema({
     firstname: {
         type: String,
         required: true
@@ -48,7 +48,13 @@ let customerSchema = new Schema({
     },
 });
 
-mongoose.model('Customers', customerSchema);  // Register model
-let customers = mongoose.model('Customers');  // instantiate model
+AccountSchema.path("email").validate(function (value) {
+    // Ensure that a given email address is valid
+    // See: https://stackoverflow.com/a/18022766/4668680 and it's related issues
+    return /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(value);
+}, "Email must be a valid email address.");
 
-module.exports = customers;
+// Compile schema
+let accounts = mongoose.model('Customers', AccountSchema);
+
+module.exports = accounts;
