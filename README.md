@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/shared-systems/api.svg?branch=master)](https://travis-ci.org/shared-systems/api)
+[![Build Status](https://travis-ci.org/deepmarket/api.svg?branch=master)](https://travis-ci.org/shared-systems/api)
 
 #### Synopsis
 **Deep Share** is an open source platform designed to allow 
