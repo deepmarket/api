@@ -1,41 +1,12 @@
 
 [![Build Status](https://travis-ci.org/deepmarket/api.svg?branch=master)](https://travis-ci.org/shared-systems/api)
 
-#### Synopsis
-**Deep Share** is an open source platform designed to allow 
-dynamic contribution and consumption of distributed computing resources.
-Using a barter based system it allows a user to offer their own computational 
-resources in exchange for tokens or use the resources of others in _the pool_.
+All of the code that powers the servers that support deepmarket's frontends. Specifically, [PLUTO](https://github.com/deepmarket/PLUTO).
+
+Instructions on setting the server up locally can be found on [this](https://github.com/deepmarket/PLUTO/wiki/Setting-up-deepmarket's-api-backend-for-local-development) wiki page over there.
 
 This project is in active development and is being maintained by the [team members](#team-members) listed below.
 If you would like to submit changes, please open a pull request.
-
-#### Required Backend Dependencies
-* MongoDB _3.0.15_
-* Nodejs _8.11.1_
-
-_-- Node Modules --_
-* ExpressJs _4.16.2_ 
-* mongoose _5.1.1_
-* jsonwebtoken _8.2.0_
-* bcrypt _3.0.0_
-* body-parser _1.18.2_
-
-_To see a full list of current dependencies (including dev) run_ `npm list --depth=0`
-
-##### To install:
-```bash
-$ npm install
-```
-
-##### To run:
-```bash
-# Start mongo daemon
-$ mongod
-
-# Start node server
-$ npm app.js
-```
 
 
 #### Team Members:
