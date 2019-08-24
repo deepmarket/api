@@ -54,8 +54,7 @@ AccountSchema.path("email").validate(function (value) {
     return /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(value);
 }, "Email must be a valid email address.");
 
-mongoose.model('Customers', AccountSchema);  // Register model
-
-let accounts = mongoose.model('Customers');  // instantiate model
+// Compile schema
+let accounts = mongoose.model('Customers', AccountSchema);
 
 module.exports = accounts;

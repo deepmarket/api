@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Account = require('../models/account_model');
 
-function good_user(user_request) {
-    return user_request.hasOwnProperty("firstname") &&
-        user_request.hasOwnProperty("lastname") &&
-        user_request.hasOwnProperty("email") &&
-        user_request.hasOwnProperty("password");
+function good_user(user) {
+    // Every `user` has the defined properties
+    return ["fisrtname", "lastname", "email", "password"].every(value => {
+        user.hasOwnProperty(value);
+    });
 }
 
 exports.get_account_by_id = (req, res) => {
