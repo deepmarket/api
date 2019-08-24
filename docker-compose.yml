@@ -1,13 +1,21 @@
 version: "3"
 services:
 
+#  nginx:
+#    image: nginx:1.15-alpine
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./conf/nginx:/etc/nginx/conf.d
+
   nginx:
-    image: nginx:1.15-alpine
+    image: owasp/modsecurity
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./conf/nginx:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
 
   certbot:
       image: certbot/certbot
