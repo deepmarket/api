@@ -80,8 +80,8 @@ exports.logout = (req, res) => {
 exports.refresh = (req, res) => {
     console.log(req.user_id);
     let token = jwt.sign({id: req.user_id}, config.JWT_KEY, jwt_options);
-    let status = 200;
     let message = "Refresh successful";
+    let status = 200;
 
     res.status(status).json({
         success: true,
