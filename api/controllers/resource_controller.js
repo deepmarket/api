@@ -22,7 +22,12 @@ function get_spark_data() {
     let spark_api_url = "http://atlantic.cs.pdx.edu:8443/json";
 
     return new Promise((resolve, reject) => {
-        request(spark_api_url, (err, res, body) => {
+        request({
+            method: "GET",
+            url: spark_api_url,
+            // Timeout of 1s
+            timeout: 5000,
+        }, (err, res, body) => {
             if(err) {
                 return reject(err);
             }
