@@ -26,7 +26,7 @@ function get_spark_data() {
             method: "GET",
             url: spark_api_url,
             // Timeout of 1s
-            timeout: 5000,
+            timeout: 1000,
         }, (err, res, body) => {
             if(err) {
                 return reject(err);
@@ -72,11 +72,11 @@ exports.get_resources_by_customer_id = async (req, res) => {
     let resources = null;
     try {
         // Updates status of a users resources known to spark
-        let {errors: errs} = await update_resources_from_spark();
+        // let {errors: errs} = await update_resources_from_spark();
 
-        if (errs.length !== 0) {
-            errors.push(new Error("Unable to update resources from cluster"));
-        }
+        // if (errs.length !== 0) {
+        //     errors.push(new Error("Unable to update resources from cluster"));
+        // }
 
         resources = await Resources.find({owner: id});
 
@@ -127,11 +127,12 @@ exports.add_resource_by_customer_id = async (req, res) => {
     } catch(err) {
         if (err.code === 11000) {
             message = `A resource at '${req.body.ip_address}' has already been added.`;
+            status = 400;
         } else {
             message = `There was an unknown error while adding ${req.body.machine_name} as a resource.`;
+            status = 500;
         }
         errors.push(err);
-        status = 500;
     } finally {
         res.status(status).json({
             success: (errors.length === 0),
