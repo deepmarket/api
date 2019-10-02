@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const customer = require('../models/account_model');
 
 const jwt_options = {
-    expiresIn: "30d",
+    expiresIn: "1d",
     issuer: "https://deepmarket.cs.pdx.edu"
 };
 
