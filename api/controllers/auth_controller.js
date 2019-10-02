@@ -2,9 +2,15 @@
 
 const config = require('../config/config');
 
-let jwt = require('jsonwebtoken');
-let bcrypt = require('bcrypt');
-let customer = require('../models/account_model');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const customer = require('../models/account_model');
+
+const jwt_options = {
+    expiresIn: "1d",
+    issuer: "https://deepmarket.cs.pdx.edu"
+};
+
 
 // Authenticate user; return token
 exports.login = (req, res) => {
@@ -33,7 +39,7 @@ exports.login = (req, res) => {
             message = "Login unsuccessful";
             bcrypt.compare(plaintext_password, user.password).then(auth => {
                 if(auth) {
-                    token = jwt.sign({id: user._id}, config.JWT_KEY);
+                    token = jwt.sign({id: user._id}, config.JWT_KEY, jwt_options);
                     message = "Login successful";
                 }
                 res.status(status).json({
@@ -69,4 +75,19 @@ exports.logout = (req, res) => {
         token: null,
         auth: false,
     })
+};
+
+exports.refresh = (req, res) => {
+    console.log(req.user_id);
+    let token = jwt.sign({id: req.user_id}, config.JWT_KEY, jwt_options);
+    let message = "Refresh successful";
+    let status = 200;
+
+    res.status(status).json({
+        success: true,
+        error: null,
+        message: message,
+        token: token,
+        auth: true,
+    });
 };
