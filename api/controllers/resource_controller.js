@@ -99,9 +99,9 @@ exports.get_resources_by_customer_id = async (req, res) => {
 };
 
 exports.add_resource_by_customer_id = async (req, res) => {
+    const id = req.user_id;
     let message, resource;
     let status = 200;
-    let id = req.user_id;
     let errors = [];
     let new_resource = null;
 
@@ -175,7 +175,7 @@ exports.update_resource_by_customer_id = async (req, res) => {
     } catch (err) {
         status = 500;
         message = `There was an error updating this resource.`;
-        errors.push(err)
+        errors.push(err);
     } finally {
         return res.status(status).json({
             // If there were no errors we'll say this was successful
