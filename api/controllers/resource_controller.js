@@ -8,7 +8,8 @@
 
 "use strict";
 
-let request = require('request');
+const request = require('request');
+const oid = require('mongoose').Types.ObjectId;
 const Resources = require('../models/resource_model');
 
 /**
@@ -87,7 +88,7 @@ exports.get_resources_by_customer_id = async (req, res) => {
         status = 500;
         errors.push(err);
     } finally {
-        res.status(status).json({
+        return res.status(status).json({
             // If we have a new resource and there were no errors this was successful
             success: !!resources && (errors.length === 0),
             errors: errors,
@@ -134,7 +135,7 @@ exports.add_resource_by_customer_id = async (req, res) => {
         }
         errors.push(err);
     } finally {
-        res.status(status).json({
+        return res.status(status).json({
             success: (errors.length === 0),
             errors: errors,
             message: message,
@@ -176,7 +177,7 @@ exports.update_resource_by_customer_id = async (req, res) => {
         message = `There was an error updating this resource.`;
         errors.push(err)
     } finally {
-        res.status(status).json({
+        return res.status(status).json({
             // If there were no errors we'll say this was successful
             success: (errors.length === 0),
             errors: errors,
@@ -196,6 +197,21 @@ exports.delete_resource_by_id = async (req, res) => {
     // Check for resource_id in params; value in body is deprecated
     // See: https://github.com/deepmarket/api/wiki/API-Enpoints#resources-resources for documentation on this
     let resource_id = req.params.resource_id;
+    
+    // Ensure resource id exists and is a valid Mongo ID
+    // See: https://stackoverflow.com/a/29231016
+    if(!resource_id || !oid.isValid(resource_id)) {
+        status = 400;
+        message = `Invalid resoruce id '${resource_id}'`
+        return res.status(status).json({
+            // Mongo returns number deleted as `n`
+            success: false,
+            errors: errors,
+            message: message,
+            data: deleted_resource,
+        });
+    }
+
     try {
 
         deleted_resource = await Resources.remove({
@@ -203,7 +219,7 @@ exports.delete_resource_by_id = async (req, res) => {
             _id: resource_id,
         });
 
-        message = `${req.body.machine_name} was successfully deleted from your resources.`;
+        message = `${deleted_resource.machine_name} was successfully deleted from your resources.`;
 
     } catch(err) {
 
@@ -213,7 +229,7 @@ exports.delete_resource_by_id = async (req, res) => {
 
     } finally {
 
-        res.status(status).json({
+        return res.status(status).json({
             // Mongo returns number deleted as `n`
             success: (deleted_resource.n > 0),
             errors: errors,
