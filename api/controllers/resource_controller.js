@@ -65,9 +65,9 @@ async function update_resources_from_spark() {
 }
 
 exports.get_resources_by_customer_id = async (req, res) => {
+    const id = req.user_id;
     let message = "";
     let status = 200;
-    let id = req.user_id;
     let errors = [];
 
     let resources = null;
@@ -145,6 +145,7 @@ exports.add_resource_by_customer_id = async (req, res) => {
 };
 
 exports.update_resource_by_customer_id = async (req, res) => {
+    const id = req.user_id
     let status = 200;
     let message = "";
     let errors = [];
@@ -158,7 +159,7 @@ exports.update_resource_by_customer_id = async (req, res) => {
     }
     
     try {
-        updated_resource = await Resources.findOneAndUpdate({_id: req.user_id},
+        updated_resource = await Resources.findOneAndUpdate({_id: id},
             // Unpack `update` and set `updatedOn` field.
             {
                 ...req.body.update,
@@ -189,6 +190,7 @@ exports.update_resource_by_customer_id = async (req, res) => {
 };
 
 exports.delete_resource_by_id = async (req, res) => {
+    const id = req.user_id;
     let message;
     let status = 200;
     let errors = [];
@@ -215,7 +217,7 @@ exports.delete_resource_by_id = async (req, res) => {
     try {
 
         deleted_resource = await Resources.remove({
-            owner: req.user_id,
+            owner: id,
             _id: resource_id,
         });
 
