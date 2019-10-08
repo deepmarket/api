@@ -118,7 +118,8 @@ exports.add_resource_by_customer_id = async (req, res) => {
             owner: id,
             createdBy: id,
             updatedBy: id,
-            machine_name: req.body.machine_name
+            machine_name: req.body.machine_name,
+            resource_container_id: req.body.container_id
         });
 
         new_resource = await resource.save();
