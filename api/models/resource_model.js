@@ -68,6 +68,10 @@ let resourceSchema = new Schema({
     machine_name: {
         type: String,
         required: true
+    },
+    resource_container_id: {
+        type: String,
+        required: false
     }
 });
 

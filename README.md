@@ -17,4 +17,5 @@ If you would like to submit changes, please open a pull request.
 * [Soyoung Kim](mailto:soyoung@pdx.edu)
 * [Sam Gomena](mailto:gomenas@pdx.edu)
 * [Martin Li](mailto:xuanzhe@pdx.edu)
+* [Logan Ballard](mailto:lballard@pdx.edu)
 
