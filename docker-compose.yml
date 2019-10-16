@@ -42,12 +42,31 @@ services:
 
     command: "npm start"
 
+  stage:
+    container_name: deepshare_api
+    image: "node"
+    restart: always
+
+    environment:
+      - MONGO_DATABASE_URL=mongodb://mongo:27017/DeepShare
+
+    build: .
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - mongo
+
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+    command: "npm start"
+
   mongo:
     container_name: mongo
     image: mongo
-
-#    volumes:
-#      - /data/db:/data/db
 
     ports:
       - "27017:27017"
