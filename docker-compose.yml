@@ -43,7 +43,7 @@ services:
     command: "npm start"
 
   stage:
-    container_name: deepshare_api
+    container_name: deepshare_api_staging
     image: "node"
     restart: always
 
