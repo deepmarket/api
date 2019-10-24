@@ -30,5 +30,7 @@
 !docker-compose.yml
 !.dockerignore
 
+# dont ignore ops
+!ops
 
 
