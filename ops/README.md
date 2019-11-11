@@ -14,7 +14,6 @@ Before doing anything else:
 
 To set up:
 
-- clone this repo and cd into the root dir
 - Deploy mongo
     - `$ kubectl apply -f ./mongo/headless_service.yaml`
     - `$ kubectl apply -f ./mongo/stateful_sets.yaml`
