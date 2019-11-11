@@ -16,8 +16,8 @@
 
 # and config files
 !.gitignore
-
 !.travis.yml
+!*.yaml
 
 # Readmes
 !README.md

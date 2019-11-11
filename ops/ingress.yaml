@@ -1,2 +1,14 @@
-# k8s ingress controller
-# to point outside web traffic -> our api service
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dm-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: \"false\"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: dm-api-svc
+          servicePort: 8080

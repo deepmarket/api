@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dm-mongo
+  labels:
+    app: dm-mongo
+spec:
+  serviceName: dm-mongo-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dm-mongo
+  template:
+    metadata:
+      labels:
+        app: dm-mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: dm-mongo
+        image: mongo
+        command:
+          - mongod
+          - "--replSet"
+          - "DmRS"
+          - "--bind_ip"
+          - 0.0.0.0
+        ports:
+        - containerPort: 27017
+          name: dm-mongo-svc
+        volumeMounts:
+          - name: dm-mongo-persistent-storage
+            mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: dm-mongo-persistent-storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "standard"
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
