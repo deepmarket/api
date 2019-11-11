@@ -15,8 +15,8 @@ Before doing anything else:
 To set up:
 
 - Deploy mongo
-    - `$ kubectl apply -f ./mongo/headless_service.yaml`
-    - `$ kubectl apply -f ./mongo/stateful_sets.yaml`
+    - `$ kubectl apply -f headless_service.yaml`
+    - `$ kubectl apply -f stateful_sets.yaml`
 - Configure mongo
     - Wait until mongo pods are ready.  check their status with `$ kubectl get pods`
     - When they are ready, initialize the replica set:
